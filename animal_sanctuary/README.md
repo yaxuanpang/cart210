@@ -2,26 +2,14 @@
 
 Yaxuan Pang
 
-[View this project online](https://yaxuanpang.github.io/cart253/topics/variation-jam-winter/)
-
-[View original variation](https://yaxuanpang.github.io/cart253/topics/variation-jam-original/)
-
-[View spring variation](https://yaxuanpang.github.io/cart253/topics/variation-jam-spring/)
-
-[View summer variation](https://yaxuanpang.github.io/cart253/topics/variation-jam-summer/)
-
-[View fall variation](https://yaxuanpang.github.io/cart253/topics/variation-jam-autumn/)
+[View this project online]
 
 ## Description
 
 
 ## Screenshot(s)
 
-> ![Image of my game](./assets/images/image1.jpg)
-> ![Image of my game](./assets/images/image2.jpg)
-> ![Image of my game](./assets/images/image3.jpg)
-> ![Image of my game](./assets/images/image4.jpg)
-> ![Image of my game](./assets/images/image5.jpg)
+> ![Image of my game]
 
 ## Attribution
 
