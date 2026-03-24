@@ -59,6 +59,10 @@ let showPigeon = false;
 let showGrid = false;
 let showStart = true;
 
+let gridSize = 20;
+let targetSize = 20;
+let lastSizeChange = 0;
+
 //speed of the animals and initial position
 // Bear
 let bx = 150, by = 100, bspeedX = 0.4, bspeedY = 1;
@@ -198,7 +202,7 @@ function drawMoreAnimals() {
 
 //function to draw the grid
 function drawGrid() {
-    //moveGrid();
+    moveGrid();
 
     if (showStart) {
         bearAlive = false;
@@ -207,8 +211,8 @@ function drawGrid() {
         rhinoAlive = false;
     }
 
-    //the grid remains a poor image fro 2 seconds
-    let squareGrid = millis() - poorTimer < 2000;
+    //the grid remains a poor image for 3 seconds
+    let squareGrid = millis() - poorTimer < 3000;
 
     // if the user clicks twice on the grid, they have to wait 10 seconds before the grid can become a poor image again
     if (clickCount >= 2 && millis() - lockTimer > 10000) {
@@ -216,31 +220,49 @@ function drawGrid() {
         isGlitched = false;
     }
 
-    x = mouseX //random(width);
-    y = mouseY //random(height);
+    //     x = mouseX //random(width);
+    //     y = mouseY //random(height);
 
-    // Draw the surveillance light
+    if (millis() - lastSizeChange > 700) {
+        targetSize = targetSize === 20 ? 35 : 20; //toggles between 20 and 35
+        lastSizeChange = millis();
+    }
+
+    // always lerp toward target
+    gridSize = lerp(gridSize, targetSize, 0.05);
+
     if (squareGrid) {
         fill(0, 255, 0, 50);
-        rect(x - 12.5, y - 12.5, 35, 35); // poor image of grid (square)
+        square(x - 22.5, y - 22.5, 45);
     } else {
         fill(0, 255, 0);
-        circle(x, y, 20); // initial grid (circle)
+        circle(x, y, gridSize);
     }
+    gridLines();
 }
+
+function gridLines() {
+    stroke(0, 255, 0, 150);  // green with some transparency
+    strokeWeight(1);
+
+    // horizontal line
+    line(0, y, width, y);
+
+    // vertical line
+    line(x, 0, x, height);
+}
+
 
 //move the grid in a wave motion across the screen
 function moveGrid() {
     x += 1.5;
     if (x > width + 10) {
         x = 0 - 10;
-        yOffset = random(100, 500); // the position of middle height of the wave is limited between 100 and 500
+        yOffset = random(100, 500);
     }
-
-    let waveSpeed = 0.02; // number of waves
-    let waveHeight = 100;  // height of waves
-    y = yOffset + sin(x * waveSpeed) * waveHeight;
-
+    let waveSpeed = 0.02;
+    let waveHeight = 100;
+    y = yOffset + sin(degrees(x * waveSpeed)) * waveHeight;
 }
 
 //check for overlaps
