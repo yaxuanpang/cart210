@@ -63,6 +63,10 @@ let gridSize = 20;
 let targetSize = 20;
 let lastSizeChange = 0;
 
+let digitalize = false;
+
+let showEnd = false;
+
 //speed of the animals and initial position
 // Bear
 let bx = 150, by = 100, bspeedX = 0.4, bspeedY = 1;
@@ -102,6 +106,14 @@ function setup() {
 function draw() {
     background(0);
 
+    digitalBear();
+    digitalDog();
+    digitalTiger();
+    digitalRhino();
+    digitalPanda();
+    digitalPigeon();
+
+    extraLines();
     checkOverlap();
     drawMoreAnimals();
 
@@ -128,6 +140,7 @@ function draw() {
     if (showGrid) {
         drawGrid();
     }
+    endGame();
 }
 
 //draws the start button
@@ -202,14 +215,7 @@ function drawMoreAnimals() {
 
 //function to draw the grid
 function drawGrid() {
-    moveGrid();
-
-    if (showStart) {
-        bearAlive = false;
-        dogAlive = false;
-        tigerAlive = false;
-        rhinoAlive = false;
-    }
+    //moveGrid();
 
     //the grid remains a poor image for 3 seconds
     let squareGrid = millis() - poorTimer < 3000;
@@ -220,8 +226,8 @@ function drawGrid() {
         isGlitched = false;
     }
 
-    //     x = mouseX //random(width);
-    //     y = mouseY //random(height);
+    x = mouseX //random(width);
+    y = mouseY //random(height);
 
     if (millis() - lastSizeChange > 700) {
         targetSize = targetSize === 20 ? 35 : 20; //toggles between 20 and 35
@@ -250,8 +256,38 @@ function gridLines() {
 
     // vertical line
     line(x, 0, x, height);
+
 }
 
+function extraLines() {
+    strokeWeight(0.5);
+    line(x + width / 2, 0, x + width / 2, height)
+
+    line(x + width / 4, 0, x + width / 4, height)
+
+    line(x + width / 2 + width / 4, 0, x + width / 2 + width / 4, height)
+
+    line(x - width / 2, 0, x - width / 2, height)
+
+    line(x - width / 4, 0, x - width / 4, height)
+
+    line(x - width / 2 - width / 4, 0, x - width / 2 - width / 4, height)
+
+
+    line(0, y + width / 2, width, y + width / 2);
+
+    line(0, y + width / 4, width, y + width / 4);
+
+    line(0, y + width / 4 + width / 2, width, y + width / 4 + width / 2);
+
+
+    line(0, y - width / 2, width, y - width / 2);
+
+    line(0, y - width / 4, width, y - width / 4);
+
+    line(0, y - width / 4 - width / 2, width, y - width / 4 - width / 2);
+
+}
 
 //move the grid in a wave motion across the screen
 function moveGrid() {
@@ -390,9 +426,11 @@ function checkOverlap() {
     }
     if (rhinoCount === 3) {
         rhinoAlive = false;
+
     }
     if (pandaCount === 3) {
         pandaAlive = false;
+
 
     }
     if (pigeonCount === 3) {
@@ -445,19 +483,28 @@ function moveAnimals() {
 
 // mouse press function
 function mousePressed() {
-    if (!showGrid) {
+    if (showEnd) {
+        // These coordinates match your 900x600 canvas centered button
+        if (mouseX > 325 && mouseX < 575 && mouseY > 405 && mouseY < 475) {
+            resetGame();
+            return; // Exit the function so we don't trigger other clicks
+        }
+    }
+
+
+    if (showStart) {
         let d = dist(mouseX, mouseY, width / 2, height / 2);
-        if (d < 160) {  // 160 = radius of the 320 diameter circle
+        if (d < 160) {
             showGrid = true;
             showStart = false;
-            startTime = millis();  // start the timer when game begins
+            startTime = millis();
         }
         return;
     }
 
     let locked = (clickCount >= 2 && millis() - lockTimer < 10000);
-
     if (locked) return;
+
     let d = dist(mouseX, mouseY, x, y);
     if (d < 20) {
         isGlitched = true;
@@ -467,8 +514,6 @@ function mousePressed() {
     if (clickCount === 2) {
         lockTimer = millis();
     }
-
-
 }
 
 //draws the animals
@@ -689,4 +734,169 @@ function drawPigeon() {
 
     pop();
 
+}
+
+function digitalBear() {
+    if (!bearAlive) {
+        digitalize = true;
+    }
+    else {
+        digitalize = false;
+    }
+    if (digitalize) {
+        stroke(89, 255, 0);
+        fill(89, 255, 0, 50)
+        rect(bx, by, 80, 80);
+    }
+}
+
+function digitalDog() {
+    if (!dogAlive) {
+        digitalize = true;
+    }
+    else {
+        digitalize = false;
+    }
+    if (digitalize) {
+        stroke(89, 255, 0);
+        fill(89, 255, 0, 50)
+        rect(dx, dy, 80, 80);
+    }
+}
+
+function digitalTiger() {
+    if (!tigerAlive) {
+        digitalize = true;
+    }
+    else {
+        digitalize = false;
+    }
+    if (digitalize) {
+        stroke(89, 255, 0);
+        fill(89, 255, 0, 50)
+        rect(tx, ty, 80, 80);
+    }
+}
+
+function digitalRhino() {
+    if (!rhinoAlive) {
+        digitalize = true;
+    }
+    else {
+        digitalize = false;
+    }
+    if (digitalize) {
+        stroke(89, 255, 0);
+        fill(89, 255, 0, 50)
+        rect(rx, ry, 80, 80);
+    }
+}
+
+function digitalPanda() {
+    if (showPanda && !pandaAlive) {
+        digitalize = true;
+    } else {
+        digitalize = false;
+    }
+    if (digitalize) {
+        stroke(89, 255, 0);
+        fill(89, 255, 0, 50)
+        rect(px, py, 80, 80);
+    }
+}
+
+function digitalPigeon() {
+    if (showPigeon && !pigeonAlive) {
+        digitalize = true;
+    } else {
+        digitalize = false;
+    }
+    if (digitalize) {
+        stroke(89, 255, 0);
+        fill(89, 255, 0, 50)
+        rect(pgx, pgy, 80, 80);
+    }
+}
+
+function endGame() {
+    if (!bearAlive && !dogAlive && !tigerAlive && !rhinoAlive && !pandaAlive && !pigeonAlive) {
+        end();
+        showEnd = true;
+    }
+}
+
+function end() {
+    push();
+    stroke(0, 255, 0);
+    fill(0);
+    rectMode(CENTER);
+    rect(width / 2, height / 2, 500, 470);
+
+    noStroke();
+    fill(0, 255, 0);
+    rect(width / 2, 120, 500, 120);
+
+
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textSize(45);
+    text("GAME OVER!", width / 2, 120);
+
+
+    stroke(0, 255, 0);
+    noFill();
+    textSize(24);
+    text("The animals are now exploitative data", width / 2, 240);
+
+    textSize(18);
+    text("They are now numbers on a screen ready to be used by", width / 2, 310);
+    text("poachers and anyone with an internet access", width / 2, 350);
+
+
+    fill(0, 255, 0, 50);
+    stroke(0, 255, 0);
+    rect(width / 2, 440, 250, 70);
+
+
+    fill(255);
+    stroke(255);
+    textSize(24);
+    text("Press here to restart", width / 2, 440);
+    pop();
+}
+
+function resetGame() {
+    push();
+    showStart = true;
+    showEnd = false;
+    showGrid = false;
+
+    clickCount = 0;
+    startTime = millis();
+
+    bearCount = 0;
+    dogCount = 0;
+    tigerCount = 0;
+    rhinoCount = 0;
+    pandaCount = 0;
+    pigeonCount = 0;
+
+
+    bearAlive = true;
+    dogAlive = true;
+    tigerAlive = true;
+    rhinoAlive = true;
+    pandaAlive = false;
+    pigeonAlive = false;
+
+    showPanda = false;
+    showPigeon = false;
+
+    bx = 150; by = 100;
+    dx = 600; dy = 450;
+    tx = 500; ty = 100;
+    rx = 300; ry = 270;
+    px = 550; py = 300;
+    pgx = 100; pgy = 400;
+    pop();
 }
