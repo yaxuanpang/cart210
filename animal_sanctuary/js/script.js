@@ -6,6 +6,8 @@ let isGlitched = false;
 let clickCount = 0;
 let lockTimer = 0;
 let poorTimer = 0;
+let elapsedTime = 0;
+let finalTime = 0;
 
 let bearCount = 0;
 let dogCount = 0;
@@ -67,6 +69,18 @@ let digitalize = false;
 
 let showEnd = false;
 
+
+let showBearTag = false;
+let showDogTag = false;
+let showTigerTag = false;
+let showRhinoTag = false;
+let showPandaTag = false;
+let showPigeonTag = false;
+
+let showRule = false;
+let showPageOne = false;
+let showPageTwo = false;
+
 //speed of the animals and initial position
 // Bear
 let bx = 150, by = 100, bspeedX = 0.4, bspeedY = 1;
@@ -100,6 +114,9 @@ function setup() {
     pigeonColor1 = color(150, 155, 165); // Pigeon Grey
     pigeonColor2 = color(100, 105, 115); // Darker grey for wings
 
+    bearColor3 = color(138, 50, 21);
+    bearColor4 = color(163, 57, 21);
+
 }
 
 
@@ -120,6 +137,20 @@ function draw() {
     //move the animals and check for overlaps
     moveAnimals();
 
+    if (showBearTag && bearAlive === true) {
+        bearTag();
+    }
+
+    if (showDogTag && dogAlive === true) {
+        dogTag();
+    }
+    if (showTigerTag && tigerAlive === true) {
+        tigerTag();
+    }
+    if (showRhinoTag && rhinoAlive === true) {
+        rhinoTag();
+    }
+
     //if the animal is alive, draw the animal of the canvas
     if (bearAlive) {
         drawBear();
@@ -135,21 +166,40 @@ function draw() {
     }
     if (showStart) {
         drawStart();
+        drawInstructions();
+        if (showRule === true) {
+            button();
+            drawRule();
+            showPageOne = true;
+
+            if (showPageTwo) {
+                showPageOne = false;
+            }
+
+            if (showPageOne) {
+                pageOne();
+            }
+            if (showPageTwo) {
+                pageTwo();
+            }
+        }
     }
     //draw the grid (green dot)
     if (showGrid) {
         drawGrid();
+        drawTimer();
     }
     endGame();
 }
 
 //draws the start button
 function drawStart() {
-
+    push();
     // check if mouse is hovering over the circle
     let d = dist(mouseX, mouseY, width / 2, height / 2);
     let hovering = d < 160;
 
+    noStroke();
     fill(0);
     rect(0, 0, width, height);
 
@@ -177,8 +227,9 @@ function drawStart() {
     }
     textSize(45);
     textStyle(BOLD);
-    text("START", width / 2, height / 2);
     textAlign(CENTER, CENTER);
+    text("START", width / 2, height / 2);
+    pop();
 }
 
 //draws the pigeon and panda
@@ -203,19 +254,26 @@ function drawMoreAnimals() {
     //if pandaAlive is true and 15 seconds has passed since the beginning of the game, draw the panda
     if (pandaAlive && currentTime > 15000) {
         drawPanda();
+        if (showPandaTag && pandaAlive === true) {
+            pandaTag();
+        }
     }
 
 
     //is the pigeon is alive, draw the pigeon
     if (pigeonAlive) {
         drawPigeon();
+        if (showPigeonTag && pigeonAlive === true) {
+            pigeonTag();
+        }
     }
 
 }
 
 //function to draw the grid
 function drawGrid() {
-    //moveGrid();
+    push();
+    moveGrid();
 
     //the grid remains a poor image for 3 seconds
     let squareGrid = millis() - poorTimer < 3000;
@@ -226,8 +284,8 @@ function drawGrid() {
         isGlitched = false;
     }
 
-    x = mouseX //random(width);
-    y = mouseY //random(height);
+    // x = mouseX //random(width);
+    // y = mouseY //random(height);
 
     if (millis() - lastSizeChange > 700) {
         targetSize = targetSize === 20 ? 35 : 20; //toggles between 20 and 35
@@ -238,6 +296,7 @@ function drawGrid() {
     gridSize = lerp(gridSize, targetSize, 0.05);
 
     if (squareGrid) {
+        noStroke();
         fill(0, 255, 0, 50);
         square(x - 22.5, y - 22.5, 45);
     } else {
@@ -245,9 +304,11 @@ function drawGrid() {
         circle(x, y, gridSize);
     }
     gridLines();
+    pop();
 }
 
 function gridLines() {
+    push();
     stroke(0, 255, 0, 150);  // green with some transparency
     strokeWeight(1);
 
@@ -256,10 +317,13 @@ function gridLines() {
 
     // vertical line
     line(x, 0, x, height);
+    pop();
 
 }
 
 function extraLines() {
+    push();
+    stroke(0, 255, 0, 150);
     strokeWeight(0.5);
     line(x + width / 2, 0, x + width / 2, height)
 
@@ -287,6 +351,7 @@ function extraLines() {
 
     line(0, y - width / 4 - width / 2, width, y - width / 4 - width / 2);
 
+    pop();
 }
 
 //move the grid in a wave motion across the screen
@@ -303,7 +368,7 @@ function moveGrid() {
 
 //check for overlaps
 function checkOverlap() {
-    let squareActive = (isGlitched === true || millis() - poorTimer < 2000);
+    let squareActive = (isGlitched === true || millis() - poorTimer < 3000);
 
     //bear
     if (bearAlive) {
@@ -493,6 +558,15 @@ function mousePressed() {
 
 
     if (showStart) {
+        if (mouseX > width / 2 - 80 && mouseX < width / 2 + 80 && mouseY > 490 && mouseY < 510) {
+            showRule = true;
+            showPageOne = true;
+            showPageTwo = false;
+        }
+        else if (mouseX > 645 && mouseX < 695 && mouseY > 50 && mouseY < 100) {
+            showRule = false;
+        }
+
         let d = dist(mouseX, mouseY, width / 2, height / 2);
         if (d < 160) {
             showGrid = true;
@@ -522,7 +596,7 @@ function drawBear() {
     push();
     noStroke();
 
-    // 1. ears
+    //ears
     fill(bearColor1); // Dark brown
     circle(bx + 15, by + 10, 28); // Left outer
     circle(bx + 65, by + 10, 28); // Right outer
@@ -557,7 +631,76 @@ function drawBear() {
     pop();
 }
 
+function drawBearDrawing(bx = 150, by = 100, sz = 1) {
+    push();
+    translate(bx, by);
+    scale(sz);
+    noStroke();
+    fill(bearColor1);
+    circle(15, 10, 28);
+    circle(65, 10, 28);
+    rect(0, 0, 80, 80, 20);
+    fill(bearColor2);
+    ellipse(40, 58, 45, 35);
+    fill(20);
+    ellipse(40, 50, 15, 10);
+    stroke(20);
+    strokeWeight(2);
+    line(40, 55, 40, 65);
+    noStroke();
+    fill(255, 50);
+    circle(25, 30, 15);
+    circle(55, 30, 15);
+    fill(0);
+    circle(25, 32, 8);
+    circle(55, 32, 8);
+    pop();
+}
+function drawBearMini(bx, by, sz = 0.5) {
+    push();
+    fill(bearColor3);
+    noStroke();
+
+    translate(bx, by);
+    scale(sz);
+
+    //ears
+    fill(bearColor3); // Dark brown
+    circle(bx + 15, by + 10, 28); // Left outer
+    circle(bx + 65, by + 10, 28); // Right outer
+
+
+    //body
+    fill(bearColor3);
+    rect(bx, by, 80, 80, 20);
+
+    //snout
+    fill(bearColor4); // Lighter brown muzzle
+    ellipse(bx + 40, by + 58, 45, 35);
+
+    // nose
+    fill(20);
+    ellipse(bx + 40, by + 50, 15, 10);
+
+    // mouth
+    stroke(20);
+    strokeWeight(2);
+    line(bx + 40, by + 55, bx + 40, by + 65); // Vertical line under nose
+    noStroke();
+
+    // eyes
+    fill(255, 50); // Small white highlights behind eyes
+    circle(bx + 25, by + 30, 15);
+    circle(bx + 55, by + 30, 15);
+
+    fill(0);
+    circle(bx + 25, by + 32, 8); // Pupils
+    circle(bx + 55, by + 32, 8);
+    pop();
+}
+
 function drawDog() {
+    push();
     noStroke();
     fill(dogColor1);
     rect(dx, dy, 80, 80, 15);
@@ -569,12 +712,13 @@ function drawDog() {
     circle(dx + 25, dy + 30, 8);
     circle(dx + 55, dy + 30, 8);
     ellipse(dx + 40, dy + 55, 15, 10);
+    pop();
 }
 
 function drawTiger() {
-    noStroke();
     push();
 
+    noStroke();
     // ears
     stroke(tigerColor1);
     strokeWeight(9);
@@ -629,6 +773,7 @@ function drawTiger() {
 }
 
 function drawRhino() {
+    push();
     noStroke();
     fill(rhinoColor1);
     rect(rx, ry, 80, 80, 10);
@@ -643,14 +788,15 @@ function drawRhino() {
     fill(0);
     circle(rx + 25, ry + 35, 6);
     circle(rx + 55, ry + 35, 6);
+    pop();
 }
 
 function drawPanda() {
-    fill(pandaColor2);
     push();
+    fill(pandaColor2);
     noStroke();
 
-    // 1. ears
+    //ears
     stroke(pandaColor1);
     fill(pandaColor2); // Dark brown
     circle(px + 15, py + 10, 28); // Left outer
@@ -820,6 +966,9 @@ function digitalPigeon() {
 
 function endGame() {
     if (!bearAlive && !dogAlive && !tigerAlive && !rhinoAlive && !pandaAlive && !pigeonAlive) {
+        if (!showEnd) {
+            finalTime = millis() - startTime;
+        }
         end();
         showEnd = true;
     }
@@ -872,6 +1021,7 @@ function resetGame() {
     showGrid = false;
 
     clickCount = 0;
+    finalTime = 0;
     startTime = millis();
 
     bearCount = 0;
@@ -892,11 +1042,383 @@ function resetGame() {
     showPanda = false;
     showPigeon = false;
 
+    showBearTag = false;
+    showDogTag = false;
+    showTigerTag = false;
+    showRhinoTag = false;
+    showPandaTag = false;
+    showPigeonTag = false;
+
     bx = 150; by = 100;
     dx = 600; dy = 450;
     tx = 500; ty = 100;
     rx = 300; ry = 270;
     px = 550; py = 300;
     pgx = 100; pgy = 400;
+    pop();
+}
+
+function bearTag() {
+    push();
+    stroke(0, 255, 0);
+    fill(0, 255, 0, 50);
+    rect(bx - 90, by + 85, 250, 150);
+
+    noStroke();
+    fill(0, 255, 0);
+    textSize(20);
+    textAlign(CENTER);
+    text("Bruno", bx + 37, by + 105);
+    textSize(15);
+    text("Age: 3 years old", bx - 25, by + 135);
+    text("Sex: M", bx - 57, by + 160);
+    text("Bruno likes to explore the wilderness", bx + 35, by + 185);
+    text("and eat berries. He is very curious", bx + 35, by + 205);
+    text("about humans and their lifestyle.", bx + 37, by + 225);
+    pop();
+}
+
+function dogTag() {
+    push();
+    stroke(0, 255, 0);
+    fill(0, 255, 0, 50);
+    rect(dx - 90, dy + 85, 250, 150);
+
+    noStroke();
+    fill(0, 255, 0);
+    textSize(20);
+    textAlign(CENTER);
+    text("Daisy", dx + 37, dy + 105);
+    textSize(15);
+    text("Age: 9 months old", dx - 17, dy + 135);
+    text("Sex: F", dx - 57, dy + 160);
+    text("Daisy enjoys long walks", dx + 35, dy + 185);
+    text("and is very playful. She wants to", dx + 35, dy + 205);
+    text("find a new forever home.", dx + 37, dy + 225);
+    pop();
+}
+
+function tigerTag() {
+    push();
+    stroke(0, 255, 0);
+    fill(0, 255, 0, 50);
+    rect(tx - 90, ty + 85, 250, 150);
+
+    noStroke();
+    fill(0, 255, 0);
+    textSize(20);
+    textAlign(CENTER);
+    text("Tiger Lily", tx + 37, ty + 105);
+    textSize(15);
+    text("Age: 4 years old", tx - 25, ty + 135);
+    text("Sex: F", tx - 57, ty + 160);
+    textSize(14);
+    text("Abandonned by her mother as a", tx + 35, ty + 185);
+    text("young cub, Tiger Lily was rescued by a", tx + 35, ty + 205);
+    text("non-profit and rereleased into the wild.", tx + 37, ty + 225);
+    pop();
+}
+
+function rhinoTag() {
+    push();
+    stroke(0, 255, 0);
+    fill(0, 255, 0, 50);
+    rect(rx - 90, ry + 85, 250, 150);
+
+    noStroke();
+    fill(0, 255, 0);
+    textSize(20);
+    textAlign(CENTER);
+    text("Fatu", rx + 37, ry + 105);
+    textSize(15);
+    text("Age: 25 years old", rx - 21, ry + 135);
+    text("Sex: F", rx - 57, ry + 160);
+    textSize(14);
+    text("Fatu and her mother are the only", rx + 35, ry + 185);
+    text("northern white rhinos left on earth. She", rx + 35, ry + 205);
+    text("enjoys eating carrots and belly rubs.", rx + 37, ry + 225);
+    pop();
+}
+
+
+function pandaTag() {
+    push();
+    stroke(0, 255, 0);
+    fill(0, 255, 0, 50);
+    rect(px - 90, py + 85, 250, 150);
+
+    noStroke();
+    fill(0, 255, 0);
+    textSize(20);
+    textAlign(CENTER);
+    text("Pan Pan", px + 37, py + 105);
+    textSize(15);
+    text("Age: 1 year old", px - 30, py + 135);
+    text("Sex: M", px - 57, py + 160);
+    textSize(14);
+    text("Named after the granpa of pandas,", px + 35, py + 185);
+    text("Pan Pan used to be bullied because", px + 35, py + 205);
+    text("he was too small. He is extremly smart.", px + 37, py + 225);
+    pop();
+}
+
+function pigeonTag() {
+    push();
+    stroke(0, 255, 0);
+    fill(0, 255, 0, 50);
+    rect(pgx - 90, pgy + 85, 250, 150);
+
+    noStroke();
+    fill(0, 255, 0);
+    textSize(20);
+    textAlign(CENTER);
+    text("Bartholomew", pgx + 37, pgy + 105);
+    textSize(15);
+    text("Age: ~ 1 year old", pgx - 23, pgy + 135);
+    text("Sex: M", pgx - 57, pgy + 160);
+    textSize(13);
+    text("Not much is known about Bartholomew.", pgx + 35, pgy + 185);
+    text("He was rescued as a hatchling and given", pgx + 35, pgy + 205);
+    text("this name to bring him abunance of food.", pgx + 37, pgy + 225);
+    pop();
+}
+
+function keyPressed() {
+    push();
+    if (keyCode === 39) {
+        showPageTwo = true;
+        showPageOne = false;
+    }
+    if (keyCode === 37) {
+        showPageTwo = false;
+        showPageOne = true;
+    }
+    if (showBearTag === false) {
+        if (key === "b") {
+            showBearTag = true
+        }
+    }
+    else if (showBearTag === true) {
+        if (key === "b") {
+            showBearTag = false
+        }
+    }
+
+    if (showDogTag === false) {
+        if (key === "d") {
+            showDogTag = true
+        }
+    }
+    else if (showDogTag === true) {
+        if (key === "d") {
+            showDogTag = false
+        }
+    }
+    if (showTigerTag === false) {
+        if (key === "t") {
+            showTigerTag = true
+        }
+    }
+    else if (showTigerTag === true) {
+        if (key === "t") {
+            showTigerTag = false
+        }
+    }
+    if (showRhinoTag === false) {
+        if (key === "r") {
+            showRhinoTag = true
+        }
+    }
+    else if (showRhinoTag === true) {
+        if (key === "r") {
+            showRhinoTag = false
+        }
+    }
+    if (showPandaTag === false) {
+        if (key === "p") {
+            showPandaTag = true
+        }
+    }
+    else if (showPandaTag === true) {
+        if (key === "p") {
+            showPandaTag = false
+        }
+    }
+    if (showPigeonTag === false) {
+        if (key === "g") {
+            showPigeonTag = true
+        }
+    }
+    else if (showPigeonTag === true) {
+        if (key === "g") {
+            showPigeonTag = false
+        }
+    }
+    pop();
+}
+
+function drawInstructions() {
+    push();
+    stroke(0)
+    noFill();
+    rect(width / 2 - 80, 490, 160, 20);
+    fill(0, 255, 0);
+    textSize(14);
+    noStroke();
+    textAlign(CENTER, CENTER);
+    text("Click here for instructions", width / 2, height / 2 + height / 3);
+    pop();
+}
+function button() {
+    push();
+    fill(0);
+    strokeWeight(3);
+    stroke(0, 255, 0);
+    rect(width / 4 + 20, height / 4 - 100, 450, 500, 15);
+    fill(0);
+    rect(645, 50, 50, 50, 10);
+
+    fill(0, 255, 0);
+    noStroke();
+    textSize(30);
+    text("x", 663, 83);
+    textAlign(CENTER, CENTER);
+
+    pop();
+}
+
+function drawRule() {
+    push();
+    fill(0, 255, 0);
+    noStroke();
+    textSize(20);
+    textAlign(CENTER, CENTER);
+    text("Instructions:", 475, 90);
+    textSize(15);
+    text("1", 460, 520);
+    text("2", 490, 520);
+    pop();
+}
+
+function pageOne() {
+    push();
+    textAlign(LEFT);
+    textSize(15);
+    noStroke();
+    fill(0, 255, 0);
+    text("- Click on the green dot to prevent the grid from detecting.", 280, 130);
+    text("the animals", 290, 150);
+    text("- If the dot overlaps with the animal 3 times, they die.", 280, 250);
+    text("- There is a 10 second cooldown after 2 clicks.", 280, 350);
+    text("- During the cooldown, the grid will be able to detect the", 280, 400);
+    text("animals even if the player clicks on the green dot.", 290, 420);
+    text("- If all the animals are dead, you lose.", 280, 470);
+
+    fill(0, 255, 0, 50);
+    strokeWeight(2);
+    stroke(0, 255, 0);
+    square(445, 505, 30, 5);
+
+    fill(0, 255, 0);
+    noStroke();
+    textAlign(CENTER, CENTER);
+    textSize(15);
+    text("--->", 660, 525);
+    text("---->", 500, 297);
+    textSize(12);
+    text("x3 times", 430, 300);
+    textSize(8);
+    text("press right key", 615, 525);
+    text("click = yay!", 380, 225);
+    text("no click = ouch!", 530, 225);
+
+    drawingOne();
+    pop();
+}
+
+function pageTwo() {
+    push();
+    textAlign(LEFT);
+    textSize(15);
+    noStroke();
+    fill(0, 255, 0);
+    text("- If all the animals are still alive after 5 seconds, the panda", 280, 130);
+    text("appears.", 290, 150);
+    text("- If all the animals (including the panda) are still alive after", 280, 200);
+    text("10 seconds, the pigeon appears.", 290, 220);
+    text("- The player can open descriptions boxes for each animal", 280, 270);
+    text("by pressing certain keys on the keyboard.", 290, 290);
+
+    fill(0, 255, 0, 50);
+    strokeWeight(2);
+    stroke(0, 255, 0);
+    square(475, 505, 30, 5);
+
+    fill(0, 255, 0);
+    noStroke();
+    textAlign(CENTER, CENTER);
+    textSize(15);
+    text("<---", 275, 525);
+    textSize(8);
+    text("press left key", 320, 525);
+
+    drawingTwo();
+    pop();
+}
+
+function drawingOne() {
+    push();
+    drawBearDrawing(360, 170, 0.5);
+    drawBearMini(240, 185, 0.5);
+    drawBearMini(340, 115, 0.5);
+
+    stroke(0, 255, 0);
+    fill(0, 255, 0, 50);
+    square(550, 275, 40);
+
+    noStroke();
+    fill(0, 255, 0);
+    circle(510, 195, 10);
+
+    fill(0, 255, 0, 50);
+    square(350, 185, 15);
+    pop();
+}
+
+function drawingTwo() {
+    push();
+    fill(0, 255, 0);
+    textSize(20);
+    text("Bear:    b", 330, 350);
+    text("Dog:     d", 330, 400);
+    text("Tiger:    t", 470, 350);
+    text("Rhino:   r", 470, 400);
+    text("Panda:   p", 610, 350);
+    text("Pigeon:  g", 610, 400);
+
+    stroke(0, 255, 0);
+    fill(0, 255, 0, 50);
+    square(350, 335, 30, 5);
+    square(350, 385, 30, 5);
+    square(493, 335, 30, 5);
+    square(493, 385, 30, 5);
+    square(635, 335, 30, 5);
+    square(635, 385, 30, 5);
+    pop();
+}
+
+function drawTimer() {
+    if (!startTime) return;
+    let elapsed = floor((showEnd ? finalTime : millis() - startTime) / 1000);
+    let minutes = floor(elapsed / 60);
+    let seconds = elapsed % 60;
+    let timeStr = nf(minutes, 2) + ":" + nf(seconds, 2);
+
+    push();
+    fill(0, 255, 0);
+    noStroke();
+    textSize(16);
+    textAlign(RIGHT, TOP);
+    text(timeStr, width - 20, 20);
     pop();
 }
