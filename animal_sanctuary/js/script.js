@@ -42,6 +42,8 @@ let pigeonTimer;
 
 let bearColor1;
 let bearColor2;
+let bearColor3;
+let bearColor4;
 
 let dogColor1;
 let tigerColor1;
@@ -95,6 +97,28 @@ let px = 550, py = 300, pspeedX = 0.5, pspeedY = 1;
 //Pigeon
 let pgx = 100, pgy = 400, pgspeedX = 1.2, pgspeedY = -0.5;
 
+let mySound;
+let clickSound;
+let hitSound;
+let gridSound;
+let dieSound;
+
+let bearDieSoundPlayed = false;
+let dogDieSoundPlayed = false;
+let tigerDieSoundPlayed = false;
+let rhinoDieSoundPlayed = false;
+let pandaDieSoundPlayed = false;
+let pigeonDieSoundPlayed = false;
+
+function preload() {
+    soundFormats('mp3');
+    mySound = loadSound('assets/sounds/nocopyrightsound633-arcade-beat-323176.mp3');
+
+    clickSound = loadSound('assets/sounds/IMG_2831-2.mp3');
+    hitSound = loadSound('assets/sounds/IMG_2831_1.mp3');
+    gridSound = loadSound('assets/sounds/IMG_2831_2.mp3');
+    dieSound = loadSound('assets/sounds/IMG_2831_3.mp3');
+}
 
 //setup and original colors of the animals
 function setup() {
@@ -167,6 +191,7 @@ function draw() {
     if (showStart) {
         drawStart();
         drawInstructions();
+        hitSound.stop();
         if (showRule === true) {
             button();
             drawRule();
@@ -273,7 +298,7 @@ function drawMoreAnimals() {
 //function to draw the grid
 function drawGrid() {
     push();
-    moveGrid();
+    //moveGrid();
 
     //the grid remains a poor image for 3 seconds
     let squareGrid = millis() - poorTimer < 3000;
@@ -284,8 +309,8 @@ function drawGrid() {
         isGlitched = false;
     }
 
-    // x = mouseX //random(width);
-    // y = mouseY //random(height);
+    x = mouseX //random(width);
+    y = mouseY //random(height);
 
     if (millis() - lastSizeChange > 700) {
         targetSize = targetSize === 20 ? 35 : 20; //toggles between 20 and 35
@@ -380,6 +405,10 @@ function checkOverlap() {
             }
             bearColor1 = color(138, 50, 21);
             bearColor2 = color(163, 57, 21);
+            hitSound.setVolume(1.4);
+            if (!hitSound.isPlaying()) {
+                hitSound.play();
+            }
         }
         else {
             bearHitReady = true;
@@ -397,6 +426,10 @@ function checkOverlap() {
                 dogCount++;
                 dogHitReady = false;
                 dogColor1 = color(196, 132, 27);
+                hitSound.setVolume(1.4);
+                if (!hitSound.isPlaying()) {
+                    hitSound.play();
+                }
             }
         }
         else {
@@ -414,6 +447,11 @@ function checkOverlap() {
                 tigerCount++;
                 tigerHitReady = false;
                 tigerColor1 = color(255);
+
+                hitSound.setVolume(1.4);
+                if (!hitSound.isPlaying()) {
+                    hitSound.play();
+                }
             }
         }
         else {
@@ -432,6 +470,11 @@ function checkOverlap() {
                 rihnoHitReady = false;
                 rhinoColor1 = color(50);
                 rhinoColor2 = color(117);
+
+                hitSound.setVolume(1.4);
+                if (!hitSound.isPlaying()) {
+                    hitSound.play();
+                }
             }
         }
         else {
@@ -451,6 +494,10 @@ function checkOverlap() {
             }
             pandaColor1 = color(245, 62, 37);
             pandaColor2 = color(181, 44, 25);
+            hitSound.setVolume(1.4);
+            if (!hitSound.isPlaying()) {
+                hitSound.play();
+            }
         }
         else {
             pandaHitReady = true;
@@ -469,6 +516,10 @@ function checkOverlap() {
             }
             pigeonColor1 = color(245, 62, 37);
             pigeonColor2 = color(181, 44, 25);
+            hitSound.setVolume(1.4);
+            if (!hitSound.isPlaying()) {
+                hitSound.play();
+            }
         }
         else {
             pigeonHitReady = true;
@@ -552,19 +603,33 @@ function mousePressed() {
         // These coordinates match your 900x600 canvas centered button
         if (mouseX > 325 && mouseX < 575 && mouseY > 405 && mouseY < 475) {
             resetGame();
+            clickSound.setVolume(1.6);
+            if (!clickSound.isPlaying()) {
+                clickSound.play();
+            }
             return; // Exit the function so we don't trigger other clicks
         }
     }
 
 
     if (showStart) {
+        showGrid = false;
         if (mouseX > width / 2 - 80 && mouseX < width / 2 + 80 && mouseY > 490 && mouseY < 510) {
             showRule = true;
             showPageOne = true;
             showPageTwo = false;
+
+            clickSound.setVolume(1.6);
+            if (!clickSound.isPlaying()) {
+                clickSound.play();
+            }
         }
         else if (mouseX > 645 && mouseX < 695 && mouseY > 50 && mouseY < 100) {
             showRule = false;
+            clickSound.setVolume(1.6);
+            if (!clickSound.isPlaying()) {
+                clickSound.play();
+            }
         }
 
         let d = dist(mouseX, mouseY, width / 2, height / 2);
@@ -572,6 +637,13 @@ function mousePressed() {
             showGrid = true;
             showStart = false;
             startTime = millis();
+
+            mySound.setVolume(0.6);
+            if (!mySound.isPlaying()) {
+                mySound.loop();
+                clickSound.setVolume(1.6);
+                clickSound.play();
+            }
         }
         return;
     }
@@ -581,6 +653,10 @@ function mousePressed() {
 
     let d = dist(mouseX, mouseY, x, y);
     if (d < 20) {
+        gridSound.setVolume(3.5);
+        if (!gridSound.isPlaying()) {
+            gridSound.play();
+        }
         isGlitched = true;
         clickCount++;
         poorTimer = millis();
@@ -893,6 +969,12 @@ function digitalBear() {
         stroke(89, 255, 0);
         fill(89, 255, 0, 50)
         rect(bx, by, 80, 80);
+
+        if (!bearDieSoundPlayed) {
+            dieSound.setVolume(0.6);
+            dieSound.play();
+            bearDieSoundPlayed = true;
+        }
     }
 }
 
@@ -907,6 +989,12 @@ function digitalDog() {
         stroke(89, 255, 0);
         fill(89, 255, 0, 50)
         rect(dx, dy, 80, 80);
+
+        if (!dogDieSoundPlayed) {
+            dieSound.setVolume(0.6);
+            dieSound.play();
+            dogDieSoundPlayed = true;
+        }
     }
 }
 
@@ -921,6 +1009,12 @@ function digitalTiger() {
         stroke(89, 255, 0);
         fill(89, 255, 0, 50)
         rect(tx, ty, 80, 80);
+
+        if (!tigerDieSoundPlayed) {
+            dieSound.setVolume(0.6);
+            dieSound.play();
+            tigerDieSoundPlayed = true;
+        }
     }
 }
 
@@ -935,6 +1029,12 @@ function digitalRhino() {
         stroke(89, 255, 0);
         fill(89, 255, 0, 50)
         rect(rx, ry, 80, 80);
+
+        if (!rhinoDieSoundPlayed) {
+            dieSound.setVolume(0.6);
+            dieSound.play();
+            rhinoDieSoundPlayed = true;
+        }
     }
 }
 
@@ -948,6 +1048,12 @@ function digitalPanda() {
         stroke(89, 255, 0);
         fill(89, 255, 0, 50)
         rect(px, py, 80, 80);
+
+        if (!pandaDieSoundPlayed) {
+            dieSound.setVolume(0.6);
+            dieSound.play();
+            pandaDieSoundPlayed = true;
+        }
     }
 }
 
@@ -961,6 +1067,12 @@ function digitalPigeon() {
         stroke(89, 255, 0);
         fill(89, 255, 0, 50)
         rect(pgx, pgy, 80, 80);
+
+        if (!pigeonDieSoundPlayed) {
+            dieSound.setVolume(0.6);
+            dieSound.play();
+            pigeonDieSoundPlayed = true;
+        }
     }
 }
 
@@ -1019,6 +1131,7 @@ function resetGame() {
     showStart = true;
     showEnd = false;
     showGrid = false;
+    digitalize = false;
 
     clickCount = 0;
     finalTime = 0;
@@ -1030,6 +1143,14 @@ function resetGame() {
     rhinoCount = 0;
     pandaCount = 0;
     pigeonCount = 0;
+
+
+    bearDieSoundPlayed = false;
+    dogDieSoundPlayed = false;
+    tigerDieSoundPlayed = false;
+    rhinoDieSoundPlayed = false;
+    pandaDieSoundPlayed = false;
+    pigeonDieSoundPlayed = false;
 
 
     bearAlive = true;
@@ -1048,6 +1169,8 @@ function resetGame() {
     showRhinoTag = false;
     showPandaTag = false;
     showPigeonTag = false;
+
+    mySound.stop();
 
     bx = 150; by = 100;
     dx = 600; dy = 450;
@@ -1188,10 +1311,20 @@ function keyPressed() {
     if (keyCode === 39) {
         showPageTwo = true;
         showPageOne = false;
+
+        clickSound.setVolume(1.6);
+        if (!clickSound.isPlaying()) {
+            clickSound.play();
+        }
     }
     if (keyCode === 37) {
         showPageTwo = false;
         showPageOne = true;
+
+        clickSound.setVolume(1.6);
+        if (!clickSound.isPlaying()) {
+            clickSound.play();
+        }
     }
     if (showBearTag === false) {
         if (key === "b") {
