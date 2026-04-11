@@ -71,7 +71,6 @@ let digitalize = false;
 
 let showEnd = false;
 
-
 let showBearTag = false;
 let showDogTag = false;
 let showTigerTag = false;
@@ -82,6 +81,11 @@ let showPigeonTag = false;
 let showRule = false;
 let showPageOne = false;
 let showPageTwo = false;
+
+let openedPageOne = false;
+let openedPageTwo = false;
+let closedRule = false;
+let showRead = false;
 
 //speed of the animals and initial position
 // Bear
@@ -102,6 +106,13 @@ let clickSound;
 let hitSound;
 let gridSound;
 let dieSound;
+let popBearSound;
+let popDogSound;
+let popTigerSound;
+let popRhinoSound;
+let popPandaSound;
+let popPigeonSound;
+let closeSound;
 
 let bearDieSoundPlayed = false;
 let dogDieSoundPlayed = false;
@@ -109,6 +120,13 @@ let tigerDieSoundPlayed = false;
 let rhinoDieSoundPlayed = false;
 let pandaDieSoundPlayed = false;
 let pigeonDieSoundPlayed = false;
+
+let bearPopSoundPlayed = false;
+let dogPopSoundPlayed = false;
+let tigerPopSoundPlayed = false;
+let rhinoPopSoundPlayed = false;
+let pandaPopSoundPlayed = false;
+let pigeonPopSoundPlayed = false;
 
 function preload() {
     soundFormats('mp3');
@@ -118,6 +136,14 @@ function preload() {
     hitSound = loadSound('assets/sounds/IMG_2831_1.mp3');
     gridSound = loadSound('assets/sounds/IMG_2831_2.mp3');
     dieSound = loadSound('assets/sounds/IMG_2831_3.mp3');
+    popBearSound = loadSound('assets/sounds/IMG_2831_4.mp3');
+    popDogSound = loadSound('assets/sounds/IMG_2831_4.mp3');
+    popTigerSound = loadSound('assets/sounds/IMG_2831_4.mp3');
+    popRhinoSound = loadSound('assets/sounds/IMG_2831_4.mp3');
+    popPandaSound = loadSound('assets/sounds/IMG_2831_4.mp3');
+    popPigeonSound = loadSound('assets/sounds/IMG_2831_4.mp3');
+    closeSound = loadSound('assets/sounds/IMG_2831_5.mp3');
+
 }
 
 //setup and original colors of the animals
@@ -163,16 +189,53 @@ function draw() {
 
     if (showBearTag && bearAlive === true) {
         bearTag();
+        if (!popBearSound.isPlaying()) {
+            popBearSound.setVolume(1.6);
+            popBearSound.play();
+
+            bearPopSoundPlayed = true;
+        }
+
+        if (bearPopSoundPlayed) {
+            setTimeout(() => popBearSound.stop(), 100);
+        }
     }
 
     if (showDogTag && dogAlive === true) {
         dogTag();
+        if (!popDogSound.isPlaying()) {
+            popDogSound.setVolume(1.6);
+            popDogSound.play();
+
+            dogPopSoundPlayed = true;
+        }
+        if (dogPopSoundPlayed) {
+            setTimeout(() => popDogSound.stop(), 100);
+        }
     }
     if (showTigerTag && tigerAlive === true) {
         tigerTag();
+        if (!popTigerSound.isPlaying()) {
+            popTigerSound.setVolume(1.6);
+            popTigerSound.play();
+
+            tigerPopSoundPlayed = true;
+        }
+        if (tigerPopSoundPlayed) {
+            setTimeout(() => popTigerSound.stop(), 100);
+        }
     }
     if (showRhinoTag && rhinoAlive === true) {
         rhinoTag();
+        if (!popRhinoSound.isPlaying()) {
+            popRhinoSound.setVolume(1.6);
+            popRhinoSound.play();
+
+            rhinoPopSoundPlayed = true;
+        }
+        if (rhinoPopSoundPlayed) {
+            setTimeout(() => popRhinoSound.stop(), 100);
+        }
     }
 
     //if the animal is alive, draw the animal of the canvas
@@ -192,6 +255,12 @@ function draw() {
         drawStart();
         drawInstructions();
         hitSound.stop();
+        bearCount = 0;
+        dogCount = 0;
+        tigerCount = 0;
+        rhinoCount = 0;
+        pandaCount = 0;
+        pigeonCount = 0;
         if (showRule === true) {
             button();
             drawRule();
@@ -208,11 +277,15 @@ function draw() {
                 pageTwo();
             }
         }
+        if (showRead) {
+            drawRead();
+        }
     }
     //draw the grid (green dot)
     if (showGrid) {
         drawGrid();
         drawTimer();
+        coolDownTimer();
     }
     endGame();
 }
@@ -221,7 +294,7 @@ function draw() {
 function drawStart() {
     push();
     // check if mouse is hovering over the circle
-    let d = dist(mouseX, mouseY, width / 2, height / 2);
+    let d = dist(mouseX, mouseY, width / 2 + 30, height / 2 + 30);
     let hovering = d < 160;
 
     noStroke();
@@ -231,19 +304,29 @@ function drawStart() {
 
 
     fill(255);
-    circle(width / 2, height / 2, 320);
+    circle(width / 2, height / 2 + 30, 320);
 
     fill(112, 153, 186, 70);
-    circle(width / 2, height / 2, 300);
+    circle(width / 2, height / 2 + 30, 300);
 
 
+    stroke(0, 255, 0);
+    strokeWeight(2);
+    fill(0, 255, 0);
+    textSize(35);
+    textAlign(CENTER, CENTER);
+    text("Welcome to the", width / 2, 55);
+    textSize(50);
+    text("Digital Animal Sanctuary!", width / 2, 120);
 
     if (hovering) {
+        noStroke();
         fill(2, 173, 2);
     } else {
+        noStroke();
         fill(0, 255, 0);
     }
-    circle(width / 2, height / 2, 290);
+    circle(width / 2, height / 2 + 30, 290);
 
     if (hovering) {
         fill(200, 200, 200);
@@ -253,7 +336,7 @@ function drawStart() {
     textSize(45);
     textStyle(BOLD);
     textAlign(CENTER, CENTER);
-    text("START", width / 2, height / 2);
+    text("START", width / 2, height / 2 + 30);
     pop();
 }
 
@@ -281,6 +364,20 @@ function drawMoreAnimals() {
         drawPanda();
         if (showPandaTag && pandaAlive === true) {
             pandaTag();
+            if (!popPandaSound.isPlaying()) {
+                popPandaSound.setVolume(1.6);
+                popPandaSound.play();
+
+                bearPopSoundPlayed = false;
+                dogPopSoundPlayed = false;
+                tigerPopSoundPlayed = false;
+                rhinoPopSoundPlayed = false;
+                pandaPopSoundPlayed = true;
+                pigeonPopSoundPlayed = false;
+            }
+            if (pandaPopSoundPlayed) {
+                setTimeout(() => popPandaSound.stop(), 100);
+            }
         }
     }
 
@@ -290,6 +387,20 @@ function drawMoreAnimals() {
         drawPigeon();
         if (showPigeonTag && pigeonAlive === true) {
             pigeonTag();
+            if (!popPigeonSound.isPlaying()) {
+                popPigeonSound.setVolume(1.6);
+                popPigeonSound.play();
+
+                bearPopSoundPlayed = false;
+                dogPopSoundPlayed = false;
+                tigerPopSoundPlayed = false;
+                rhinoPopSoundPlayed = false;
+                pandaPopSoundPlayed = false;
+                pigeonPopSoundPlayed = true;
+            }
+            if (pigeonPopSoundPlayed) {
+                setTimeout(() => popPigeonSound.stop(), 100);
+            }
         }
     }
 
@@ -304,6 +415,8 @@ function drawGrid() {
     let squareGrid = millis() - poorTimer < 3000;
 
     // if the user clicks twice on the grid, they have to wait 10 seconds before the grid can become a poor image again
+
+
     if (clickCount >= 2 && millis() - lockTimer > 10000) {
         clickCount = 0;
         isGlitched = false;
@@ -324,7 +437,12 @@ function drawGrid() {
         noStroke();
         fill(0, 255, 0, 50);
         square(x - 22.5, y - 22.5, 45);
+        fill(255, 0, 0, 50);
+        square(x - 22.5 + 5, y - 22.5 + 5, 45);
+        fill(0, 0, 255, 50);
+        square(x - 22.5 - 5, y - 22.5 - 5, 45);
     } else {
+        noStroke();
         fill(0, 255, 0);
         circle(x, y, gridSize);
     }
@@ -334,47 +452,356 @@ function drawGrid() {
 
 function gridLines() {
     push();
-    stroke(0, 255, 0, 150);  // green with some transparency
-    strokeWeight(1);
+    let squareGrid = millis() - poorTimer < 3000;
 
-    // horizontal line
-    line(0, y, width, y);
+    if (squareGrid) {
+        stroke(255, 0, 0, 150);  // red with some transparency
+        strokeWeight(1);
 
-    // vertical line
-    line(x, 0, x, height);
+        // horizontal line
+
+        line(0, y + 3, width, y + 3);
+
+        // vertical line
+        line(x + 3, 0, x + 3, height);
+
+
+        stroke(0, 255, 0, 150);  // green with some transparency
+        strokeWeight(1);
+
+        // horizontal line
+        line(0, y, width, y);
+
+        // vertical line
+        line(x, 0, x, height);
+
+
+        stroke(255, 255, 255, 150);
+        // horizontal line
+        line(0, y - 1.5, width, y - 1.5);
+
+        // vertical line
+        line(x - 1.5, 0, x - 1.5, height);
+
+        line(0, y + 1.5, width, y + 1.5);
+
+        // vertical line
+        line(x + 1.5, 0, x + 1.5, height);
+
+
+        stroke(0, 0, 255, 150);  // blue with some transparency
+        strokeWeight(1);
+
+        // horizontal line
+        line(0, y - 3, width, y - 3);
+
+        // vertical line
+        line(x - 3, 0, x - 3, height);
+
+
+    } else {
+        stroke(0, 255, 0, 150);  // green with some transparency
+        strokeWeight(1);
+
+        // horizontal line
+        line(0, y, width, y);
+
+        // vertical line
+        line(x, 0, x, height);
+    }
     pop();
 
 }
 
 function extraLines() {
     push();
-    stroke(0, 255, 0, 150);
-    strokeWeight(0.5);
-    line(x + width / 2, 0, x + width / 2, height)
+    let squareGrid = millis() - poorTimer < 3000;
 
-    line(x + width / 4, 0, x + width / 4, height)
+    if (squareGrid) {
+        //green
+        stroke(0, 255, 0, 150);
+        strokeWeight(0.5);
+        line(x + width / 2, 0, x + width / 2, height)
 
-    line(x + width / 2 + width / 4, 0, x + width / 2 + width / 4, height)
+        line(x + width / 4, 0, x + width / 4, height)
 
-    line(x - width / 2, 0, x - width / 2, height)
+        line(x + width / 2 + width / 4, 0, x + width / 2 + width / 4, height)
 
-    line(x - width / 4, 0, x - width / 4, height)
+        stroke(0, 255, 0, 75);
+        //middle lines
+        line(x + width / 8, 0, x + width / 8, height);
+        line(x + width / 8 + width / 4, 0, x + width / 8 + width / 4, height);
 
-    line(x - width / 2 - width / 4, 0, x - width / 2 - width / 4, height)
+        line(x + width / 2 + width / 4 / 2, 0, x + width / 2 + width / 4 / 2, height);
+
+        line(x + width / 2 + width / 8 + width / 4, 0, x + width / 2 + width / 8 + width / 4, height);
+
+        stroke(0, 255, 0, 150);
+        line(x - width / 2, 0, x - width / 2, height)
+
+        line(x - width / 4, 0, x - width / 4, height)
+
+        line(x - width / 2 - width / 4, 0, x - width / 2 - width / 4, height)
+
+        stroke(0, 255, 0, 75);
+        //middle lines
+        line(x - width / 8, 0, x - width / 8, height);
+        line(x - width / 8 - width / 4, 0, x - width / 8 - width / 4, height);
+
+        line(x - width / 2 - width / 4 / 2, 0, x - width / 2 - width / 4 / 2, height);
+
+        line(x - width / 2 - width / 8 - width / 4, 0, x - width / 2 - width / 8 - width / 4, height);
+
+        stroke(0, 255, 0, 150);
+        line(0, y + width / 2, width, y + width / 2);
+
+        line(0, y + width / 4, width, y + width / 4);
+
+        line(0, y + width / 4 + width / 2, width, y + width / 4 + width / 2);
+
+        stroke(0, 255, 0, 75);
+        //middle lines
+        line(0, y + width / 8, width, y + width / 8);
+
+        line(0, y + width / 8 + width / 4, width, y + width / 8 + width / 4);
+
+        line(0, y + width / 4 + width / 2, width, y + width / 4 + width / 2);
+
+        line(0, y + width / 8 + width / 4 + width / 4, width, y + width / 8 + width / 4 + width / 4);
+
+        stroke(0, 255, 0, 150);
+        line(0, y - width / 2, width, y - width / 2);
+
+        line(0, y - width / 4, width, y - width / 4);
+
+        line(0, y - width / 4 - width / 2, width, y - width / 4 - width / 2);
+
+        stroke(0, 255, 0, 75);
+        //middle lines
+        line(0, y - width / 8, width, y - width / 8);
+
+        line(0, y - width / 8 - width / 4, width, y - width / 8 - width / 4);
+
+        line(0, y - width / 4 - width / 2, width, y - width / 4 - width / 2);
+
+        line(0, y - width / 8 - width / 4 - width / 4, width, y - width / 8 - width / 4 - width / 4);
 
 
-    line(0, y + width / 2, width, y + width / 2);
+        //red
+        stroke(255, 0, 0, 150);
+        strokeWeight(0.5);
+        line(x + width / 2 + 3, 0, x + width / 2 + 3, height)
 
-    line(0, y + width / 4, width, y + width / 4);
+        line(x + width / 4 + 3, 0, x + width / 4 + 3, height)
 
-    line(0, y + width / 4 + width / 2, width, y + width / 4 + width / 2);
+        line(x + width / 2 + width / 4 + 3, 0, x + width / 2 + width / 4 + 3, height)
 
 
-    line(0, y - width / 2, width, y - width / 2);
+        stroke(255, 0, 0, 75);
+        //middle lines
+        line(x + width / 8 + 3, 0, x + width / 8 + 3, height);
+        line(x + width / 8 + width / 4 + 3, 0, x + width / 8 + width / 4 + 3, height);
 
-    line(0, y - width / 4, width, y - width / 4);
+        line(x + width / 2 + width / 4 / 2 + 3, 0, x + width / 2 + width / 4 / 2 + 3, height);
 
-    line(0, y - width / 4 - width / 2, width, y - width / 4 - width / 2);
+        line(x + width / 2 + width / 8 + width / 4 + 3, 0, x + width / 2 + width / 8 + width / 4 + 3, height);
+
+        stroke(255, 0, 0, 150);
+        line(x - width / 2 - 3, 0, x - width / 2 - 3, height)
+
+        line(x - width / 4 - 3, 0, x - width / 4 - 3, height)
+
+        line(x - width / 2 - width / 4 - 3, 0, x - width / 2 - width / 4 - 3, height)
+
+
+        stroke(255, 0, 0, 75);
+        //middle lines
+        line(x - width / 8 - 3, 0, x - width / 8 - 3, height);
+        line(x - width / 8 - width / 4 - 3, 0, x - width / 8 - width / 4 - 3, height);
+
+        line(x - width / 2 - width / 4 / 2 - 3, 0, x - width / 2 - width / 4 / 2 - 3, height);
+
+        line(x - width / 2 - width / 8 - width / 4 - 3, 0, x - width / 2 - width / 8 - width / 4 - 3, height);
+
+        stroke(255, 0, 0, 150);
+        line(0, y + width / 2 + 3, width, y + width / 2 + 3);
+
+        line(0, y + width / 4 + 3, width, y + width / 4 + 3);
+
+        line(0, y + width / 4 + width / 2 + 3, width, y + width / 4 + width / 2 + 3);
+
+
+        stroke(255, 0, 0, 75);
+        //middle lines
+        line(0, y - width / 8 + 3, width, y - width / 8 + 3);
+
+        line(0, y - width / 8 - width / 4 + 3, width, y - width / 8 - width / 4 + 3);
+
+        line(0, y - width / 4 - width / 2 + 3, width, y - width / 4 - width / 2 + 3);
+
+        line(0, y - width / 8 - width / 4 - width / 4 + 3, width, y - width / 8 - width / 4 - width / 4 + 3);
+
+
+        stroke(255, 0, 0, 150);
+        line(0, y - width / 2 - 3, width, y - width / 2 - 3);
+
+        line(0, y - width / 4 - 3, width, y - width / 4 - 3);
+
+        line(0, y - width / 4 - width / 2 - 3, width, y - width / 4 - width / 2 - 3);
+
+        stroke(255, 0, 0, 75);
+        //middle lines
+        line(0, y + width / 8, width + 3, y + width / 8 + 3);
+
+        line(0, y + width / 8 + width / 4 + 3, width, y + width / 8 + width / 4 + 3);
+
+        line(0, y + width / 4 + width / 2 + 3, width, y + width / 4 + width / 2 + 3);
+
+        line(0, y + width / 8 + width / 4 + width / 4 + 3, width, y + width / 8 + width / 4 + width / 4 + 3);
+
+
+        //blue
+        stroke(0, 0, 255, 150);
+        strokeWeight(0.5);
+        line(x + width / 2 - 3, 0, x + width / 2 - 3, height)
+
+        line(x + width / 4 - 3, 0, x + width / 4 - 3, height)
+
+        line(x + width / 2 + width / 4 - 3, 0, x + width / 2 + width / 4 - 3, height)
+
+
+        stroke(0, 0, 255, 75);
+        //middle lines
+        line(x + width / 8 - 3, 0, x + width / 8 - 3, height);
+        line(x + width / 8 + width / 4 - 3, 0, x + width / 8 + width / 4 - 3, height);
+
+        line(x + width / 2 + width / 4 / 2 - 3, 0, x + width / 2 + width / 4 / 2 - 3, height);
+
+        line(x + width / 2 + width / 8 + width / 4 - 3, 0, x + width / 2 + width / 8 + width / 4 - 3, height);
+
+        stroke(0, 0, 255, 150);
+        line(x - width / 2 + 3, 0, x - width / 2 + 3, height)
+
+        line(x - width / 4 + 3, 0, x - width / 4 + 3, height)
+
+        line(x - width / 2 - width / 4 + 3, 0, x - width / 2 - width / 4 + 3, height)
+
+
+        stroke(0, 0, 255, 75);
+        //middle lines
+        line(x - width / 8 + 3, 0, x - width / 8 + 3, height);
+        line(x - width / 8 - width / 4 + 3, 0, x - width / 8 - width / 4 + 3, height);
+
+        line(x - width / 2 - width / 4 / 2 + 3, 0, x - width / 2 - width / 4 / 2 + 3, height);
+
+        line(x - width / 2 - width / 8 - width / 4 + 3, 0, x - width / 2 - width / 8 - width / 4 + 3, height);
+
+
+        stroke(0, 0, 255, 150);
+        line(0, y + width / 2 - 3, width, y + width / 2 - 3);
+
+        line(0, y + width / 4 - 3, width, y + width / 4 - 3);
+
+        line(0, y + width / 4 + width / 2 - 3, width, y + width / 4 + width / 2 - 3);
+
+
+        stroke(0, 0, 255, 75);
+        //middle lines
+        line(0, y - width / 8 - 3, width, y - width / 8 - 3);
+
+        line(0, y - width / 8 - width / 4 - 3, width, y - width / 8 - width / 4 - 3);
+
+        line(0, y - width / 4 - width / 2 - 3, width, y - width / 4 - width / 2 - 3);
+
+        line(0, y - width / 8 - width / 4 - width / 4 - 3, width, y - width / 8 - width / 4 - width / 4 - 3);
+
+        stroke(0, 0, 255, 150);
+        line(0, y - width / 2 + 3, width, y - width / 2 + 3);
+
+        line(0, y - width / 4 + 3, width, y - width / 4 + 3);
+
+        line(0, y - width / 4 - width / 2 + 3, width, y - width / 4 - width / 2 + 3);
+
+        stroke(0, 0, 255, 75);
+        //middle lines
+        line(0, y + width / 8, width - 3, y + width / 8 - 3);
+
+        line(0, y + width / 8 + width / 4 - 3, width, y + width / 8 + width / 4 - 3);
+
+        line(0, y + width / 4 + width / 2 - 3, width, y + width / 4 + width / 2 - 3);
+
+        line(0, y + width / 8 + width / 4 + width / 4 - 3, width, y + width / 8 + width / 4 + width / 4 - 3);
+
+    } else {
+
+        stroke(0, 255, 0, 150);
+        strokeWeight(0.5);
+        line(x + width / 2, 0, x + width / 2, height)
+
+        line(x + width / 4, 0, x + width / 4, height)
+
+        line(x + width / 2 + width / 4, 0, x + width / 2 + width / 4, height)
+
+        stroke(0, 255, 0, 75);
+        //middle lines
+        line(x + width / 8, 0, x + width / 8, height);
+        line(x + width / 8 + width / 4, 0, x + width / 8 + width / 4, height);
+
+        line(x + width / 2 + width / 4 / 2, 0, x + width / 2 + width / 4 / 2, height);
+
+        line(x + width / 2 + width / 8 + width / 4, 0, x + width / 2 + width / 8 + width / 4, height);
+
+        stroke(0, 255, 0, 150);
+        line(x - width / 2, 0, x - width / 2, height)
+
+        line(x - width / 4, 0, x - width / 4, height)
+
+        line(x - width / 2 - width / 4, 0, x - width / 2 - width / 4, height)
+
+        stroke(0, 255, 0, 75);
+        //middle lines
+        line(x - width / 8, 0, x - width / 8, height);
+        line(x - width / 8 - width / 4, 0, x - width / 8 - width / 4, height);
+
+        line(x - width / 2 - width / 4 / 2, 0, x - width / 2 - width / 4 / 2, height);
+
+        line(x - width / 2 - width / 8 - width / 4, 0, x - width / 2 - width / 8 - width / 4, height);
+
+
+        stroke(0, 255, 0, 150);
+        line(0, y + width / 2, width, y + width / 2);
+
+        line(0, y + width / 4, width, y + width / 4);
+
+        line(0, y + width / 4 + width / 2, width, y + width / 4 + width / 2);
+
+        stroke(0, 255, 0, 75);
+        //middle lines
+        line(0, y + width / 8, width, y + width / 8);
+
+        line(0, y + width / 8 + width / 4, width, y + width / 8 + width / 4);
+
+        line(0, y + width / 4 + width / 2, width, y + width / 4 + width / 2);
+
+        line(0, y + width / 8 + width / 4 + width / 4, width, y + width / 8 + width / 4 + width / 4);
+
+        stroke(0, 255, 0, 150);
+        line(0, y - width / 2, width, y - width / 2);
+
+        line(0, y - width / 4, width, y - width / 4);
+
+        line(0, y - width / 4 - width / 2, width, y - width / 4 - width / 2);
+
+        stroke(0, 255, 0, 75);
+        //middle lines
+        line(0, y - width / 8, width, y - width / 8);
+
+        line(0, y - width / 8 - width / 4, width, y - width / 8 - width / 4);
+
+        line(0, y - width / 4 - width / 2, width, y - width / 4 - width / 2);
+
+        line(0, y - width / 8 - width / 4 - width / 4, width, y - width / 8 - width / 4 - width / 4);
+    }
 
     pop();
 }
@@ -600,24 +1027,36 @@ function moveAnimals() {
 // mouse press function
 function mousePressed() {
     if (showEnd) {
-        // These coordinates match your 900x600 canvas centered button
         if (mouseX > 325 && mouseX < 575 && mouseY > 405 && mouseY < 475) {
             resetGame();
             clickSound.setVolume(1.6);
             if (!clickSound.isPlaying()) {
                 clickSound.play();
             }
-            return; // Exit the function so we don't trigger other clicks
+            return;
         }
     }
 
-
     if (showStart) {
+        if (mouseX > 705 && mouseX < 755 && mouseY > 130 && mouseY < 180) {
+            showRead = false;
+
+            clickSound.setVolume(1.6);
+            if (!clickSound.isPlaying()) {
+                clickSound.play();
+            }
+            return;
+        }
         showGrid = false;
-        if (mouseX > width / 2 - 80 && mouseX < width / 2 + 80 && mouseY > 490 && mouseY < 510) {
+        if (mouseX > width / 2 - 80 && mouseX < width / 2 + 80 && mouseY > 490 + 30 && mouseY < 510 + 30) {
             showRule = true;
             showPageOne = true;
             showPageTwo = false;
+
+            openedPageOne = true;
+            openedPageTwo = false;
+            closedRule = false;
+            showRead = false;
 
             clickSound.setVolume(1.6);
             if (!clickSound.isPlaying()) {
@@ -626,26 +1065,48 @@ function mousePressed() {
         }
         else if (mouseX > 645 && mouseX < 695 && mouseY > 50 && mouseY < 100) {
             showRule = false;
+
+            openedPageOne = true;
+            openedPageTwo = true;
+            closedRule = true;
+
+
+
             clickSound.setVolume(1.6);
             if (!clickSound.isPlaying()) {
                 clickSound.play();
             }
         }
 
-        let d = dist(mouseX, mouseY, width / 2, height / 2);
-        if (d < 160) {
-            showGrid = true;
-            showStart = false;
-            startTime = millis();
+        let d = dist(mouseX, mouseY, width / 2 + 30, height / 2 + 30);
+        if (closedRule === true) {
+            if (d < 160) {
+                showGrid = true;
+                showStart = false;
+                showRead = false;
+                startTime = millis();
 
-            mySound.setVolume(0.6);
-            if (!mySound.isPlaying()) {
-                mySound.loop();
+                mySound.setVolume(0.6);
+                if (!mySound.isPlaying()) {
+                    mySound.loop();
+                    clickSound.setVolume(1.6);
+                    clickSound.play();
+                }
+            }
+            return;
+        }
+        else if (closedRule === false) {
+            if (d < 160) {
+                showGrid = false;
+                showStart = true;
+                showRead = true;
+
                 clickSound.setVolume(1.6);
-                clickSound.play();
+                if (!clickSound.isPlaying()) {
+                    clickSound.play();
+                }
             }
         }
-        return;
     }
 
     let locked = (clickCount >= 2 && millis() - lockTimer < 10000);
@@ -1171,6 +1632,7 @@ function resetGame() {
     showPigeonTag = false;
 
     mySound.stop();
+    hitSound.stop();
 
     bx = 150; by = 100;
     dx = 600; dy = 450;
@@ -1334,6 +1796,10 @@ function keyPressed() {
     else if (showBearTag === true) {
         if (key === "b") {
             showBearTag = false
+            closeSound.setVolume(1.6);
+            if (!closeSound.isPlaying()) {
+                closeSound.play();
+            }
         }
     }
 
@@ -1345,6 +1811,10 @@ function keyPressed() {
     else if (showDogTag === true) {
         if (key === "d") {
             showDogTag = false
+            closeSound.setVolume(1.6);
+            if (!closeSound.isPlaying()) {
+                closeSound.play();
+            }
         }
     }
     if (showTigerTag === false) {
@@ -1355,6 +1825,10 @@ function keyPressed() {
     else if (showTigerTag === true) {
         if (key === "t") {
             showTigerTag = false
+            closeSound.setVolume(1.6);
+            if (!closeSound.isPlaying()) {
+                closeSound.play();
+            }
         }
     }
     if (showRhinoTag === false) {
@@ -1365,6 +1839,10 @@ function keyPressed() {
     else if (showRhinoTag === true) {
         if (key === "r") {
             showRhinoTag = false
+            closeSound.setVolume(1.6);
+            if (!closeSound.isPlaying()) {
+                closeSound.play();
+            }
         }
     }
     if (showPandaTag === false) {
@@ -1375,6 +1853,10 @@ function keyPressed() {
     else if (showPandaTag === true) {
         if (key === "p") {
             showPandaTag = false
+            closeSound.setVolume(1.6);
+            if (!closeSound.isPlaying()) {
+                closeSound.play();
+            }
         }
     }
     if (showPigeonTag === false) {
@@ -1385,6 +1867,10 @@ function keyPressed() {
     else if (showPigeonTag === true) {
         if (key === "g") {
             showPigeonTag = false
+            closeSound.setVolume(1.6);
+            if (!closeSound.isPlaying()) {
+                closeSound.play();
+            }
         }
     }
     pop();
@@ -1394,12 +1880,14 @@ function drawInstructions() {
     push();
     stroke(0)
     noFill();
-    rect(width / 2 - 80, 490, 160, 20);
+    rect(width / 2 - 80, 490 + 30, 160, 20);
     fill(0, 255, 0);
     textSize(14);
     noStroke();
     textAlign(CENTER, CENTER);
-    text("Click here for instructions", width / 2, height / 2 + height / 3);
+    text("Click here for instructions", width / 2, height / 2 + height / 3 + 30);
+    textSize(15);
+    text("Make sure your volume is up! 🔊", width / 2, height / 2 + height / 3 + 60);
     pop();
 }
 function button() {
@@ -1439,8 +1927,8 @@ function pageOne() {
     textSize(15);
     noStroke();
     fill(0, 255, 0);
-    text("- Click on the green dot to prevent the grid from detecting.", 280, 130);
-    text("the animals", 290, 150);
+    text("- Protect the animals by click on the green dot to prevent", 280, 130);
+    text("the grid from detecting them", 290, 150);
     text("- If the dot overlaps with the animal 3 times, they die.", 280, 250);
     text("- There is a 10 second cooldown after 2 clicks.", 280, 350);
     text("- During the cooldown, the grid will be able to detect the", 280, 400);
@@ -1475,10 +1963,10 @@ function pageTwo() {
     textSize(15);
     noStroke();
     fill(0, 255, 0);
-    text("- If all the animals are still alive after 5 seconds, the panda", 280, 130);
+    text("- If all the animals are still alive after 15 seconds, the panda", 280, 130);
     text("appears.", 290, 150);
     text("- If all the animals (including the panda) are still alive after", 280, 200);
-    text("10 seconds, the pigeon appears.", 290, 220);
+    text("20 seconds, the pigeon appears.", 290, 220);
     text("- The player can open descriptions boxes for each animal", 280, 270);
     text("by pressing certain keys on the keyboard.", 290, 290);
 
@@ -1553,5 +2041,47 @@ function drawTimer() {
     textSize(16);
     textAlign(RIGHT, TOP);
     text(timeStr, width - 20, 20);
+    pop();
+}
+
+function coolDownTimer() {
+    push();
+    if (clickCount === 2) {
+        let timeRemaining = 10 - floor((millis() - lockTimer) / 1000);
+        timeRemaining = max(0, timeRemaining);
+
+        fill(0, 255, 0);
+        noStroke();
+        textSize(20);
+        textAlign(CENTER, CENTER);
+        text("Cooldown Time: " + timeRemaining, width / 2, 40);
+    }
+    pop();
+}
+
+function drawRead() {
+    push();
+    fill(0);
+    strokeWeight(3);
+    stroke(0, 255, 0);
+    rect(width / 4 - 50, height / 4 - 20, 580, 350, 15);
+    fill(0, 255, 0, 30);
+    rect(width / 4 - 50, height / 4 - 20, 580, 350, 15);
+    rect(705, 130, 50, 50, 10);
+
+    fill(0, 255, 0);
+    noStroke();
+    textSize(30);
+    text("x", 723, 163);
+    textAlign(CENTER, CENTER);
+    textSize(25);
+    text("YOU DID NOT READ THE INSTRUCTIONS!!", width / 2 + 15, height / 2 - 20);
+    textSize(15);
+    text("Please read the instructions before you start playing! :)", width / 2 + 15, height / 2 + 20);
+
+
+    textSize(20);
+    textAlign(RIGHT, CENTER);
+
     pop();
 }
