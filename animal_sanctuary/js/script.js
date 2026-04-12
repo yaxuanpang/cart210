@@ -15,6 +15,7 @@ let tigerCount = 0;
 let rhinoCount = 0;
 let pandaCount = 0;
 let pigeonCount = 0;
+let catCount = 0;
 
 let bearAlive = true;
 let bearHitReady = true;
@@ -34,12 +35,17 @@ let pandaHitReady = true;
 let pigeonAlive = false;
 let pigeonHitReady = true;
 
+let catAlive = false;
+let catHitReady = true;
+
 let extraAnimals = false;
 
+//timers
 let startTime;
 let pandaTimer;
 let pigeonTimer;
 
+//colors
 let bearColor1;
 let bearColor2;
 let bearColor3;
@@ -57,27 +63,39 @@ let pandaColor2;
 let pigeonColor1;
 let pigeonColor2;
 
+let catColor1;
+let catColor2;
+let catColor3;
+let catColor4
+let catFrownColor;
+
+//other animals
 let showPanda = false;
 let showPigeon = false;
+let showCat = false;
 
+//game mechanics
 let showGrid = false;
 let showStart = true;
 
+let digitalize = false;
+let showEnd = false;
+
+//grid circle size
 let gridSize = 20;
 let targetSize = 20;
 let lastSizeChange = 0;
 
-let digitalize = false;
-
-let showEnd = false;
-
+//tags
 let showBearTag = false;
 let showDogTag = false;
 let showTigerTag = false;
 let showRhinoTag = false;
 let showPandaTag = false;
 let showPigeonTag = false;
+let showCatTag = false;
 
+//instruction pages
 let showRule = false;
 let showPageOne = false;
 let showPageTwo = false;
@@ -100,7 +118,10 @@ let rx = 300, ry = 270, rspeedX = 1, rspeedY = 3;
 let px = 550, py = 300, pspeedX = 0.5, pspeedY = 1;
 //Pigeon
 let pgx = 100, pgy = 400, pgspeedX = 1.2, pgspeedY = -0.5;
+//cat
+let cx = 200, cy = 300, cspeedX = 0.8, cspeedY = 1.2;
 
+//sounds
 let mySound;
 let clickSound;
 let hitSound;
@@ -112,6 +133,7 @@ let popTigerSound;
 let popRhinoSound;
 let popPandaSound;
 let popPigeonSound;
+let popCatSound;
 let closeSound;
 
 let bearDieSoundPlayed = false;
@@ -120,6 +142,7 @@ let tigerDieSoundPlayed = false;
 let rhinoDieSoundPlayed = false;
 let pandaDieSoundPlayed = false;
 let pigeonDieSoundPlayed = false;
+let catDieSoundPlayed = false;
 
 let bearPopSoundPlayed = false;
 let dogPopSoundPlayed = false;
@@ -127,7 +150,9 @@ let tigerPopSoundPlayed = false;
 let rhinoPopSoundPlayed = false;
 let pandaPopSoundPlayed = false;
 let pigeonPopSoundPlayed = false;
+let CatPopSoundPlayed = false;
 
+//preloading the sound effects
 function preload() {
     soundFormats('mp3');
     mySound = loadSound('assets/sounds/nocopyrightsound633-arcade-beat-323176.mp3');
@@ -142,6 +167,7 @@ function preload() {
     popRhinoSound = loadSound('assets/sounds/IMG_2831_4.mp3');
     popPandaSound = loadSound('assets/sounds/IMG_2831_4.mp3');
     popPigeonSound = loadSound('assets/sounds/IMG_2831_4.mp3');
+    popCatSound = loadSound('assets/sounds/IMG_2831_4.mp3');
     closeSound = loadSound('assets/sounds/IMG_2831_5.mp3');
 
 }
@@ -149,7 +175,7 @@ function preload() {
 //setup and original colors of the animals
 function setup() {
     createCanvas(900, 600);
-    angleMode(DEGREES);
+    angleMode(DEGREES); // angle mode in degrees
     bearColor1 = color(94, 56, 10);
     dogColor1 = color(247, 213, 158);
     tigerColor1 = color(240, 150, 41);
@@ -167,26 +193,36 @@ function setup() {
     bearColor3 = color(138, 50, 21);
     bearColor4 = color(163, 57, 21);
 
+    catColor1 = color(245, 235, 210);
+    catColor2 = color(92, 69, 53);
+    catColor3 = color(60, 45, 35);
+    catColor4 = color(143, 104, 61);
+    catFrownColor = color(40, 30, 20);
+
 }
 
-
+//draws everything
 function draw() {
-    background(0);
+    background(0); // background color
 
+    //green square when the animal dies
     digitalBear();
     digitalDog();
     digitalTiger();
     digitalRhino();
     digitalPanda();
     digitalPigeon();
+    digitalCat();
 
-    extraLines();
-    checkOverlap();
-    drawMoreAnimals();
+    extraLines();// extra grid lines
+    checkOverlap(); // checks if the grid overlaps with animals
+    drawMoreAnimals(); // panda, pigeon, cat
 
     //move the animals and check for overlaps
     moveAnimals();
 
+    //shows the tag (description box) and plays the sound effects
+    //4 original animals
     if (showBearTag && bearAlive === true) {
         bearTag();
         if (!popBearSound.isPlaying()) {
@@ -251,6 +287,7 @@ function draw() {
     if (rhinoAlive) {
         drawRhino();
     }
+    //start of the game
     if (showStart) {
         drawStart();
         drawInstructions();
@@ -261,6 +298,7 @@ function draw() {
         rhinoCount = 0;
         pandaCount = 0;
         pigeonCount = 0;
+        catCount = 0;
         if (showRule === true) {
             button();
             drawRule();
@@ -290,7 +328,7 @@ function draw() {
     endGame();
 }
 
-//draws the start button
+//draws the starting screen
 function drawStart() {
     push();
     // check if mouse is hovering over the circle
@@ -300,7 +338,6 @@ function drawStart() {
     noStroke();
     fill(0);
     rect(0, 0, width, height);
-
 
 
     fill(255);
@@ -319,6 +356,7 @@ function drawStart() {
     textSize(50);
     text("Digital Animal Sanctuary!", width / 2, 120);
 
+    //if the mouse is hovering above the start button, it changes color
     if (hovering) {
         noStroke();
         fill(2, 173, 2);
@@ -359,6 +397,12 @@ function drawMoreAnimals() {
         }
     }
 
+    // if the game is still going and 2 minutes have passed, catAlive is true
+    if (!showEnd && currentTime > 120000 && !showCat) {
+        catAlive = true;
+        showCat = true;
+    }
+
     //if pandaAlive is true and 15 seconds has passed since the beginning of the game, draw the panda
     if (pandaAlive && currentTime > 15000) {
         drawPanda();
@@ -368,12 +412,7 @@ function drawMoreAnimals() {
                 popPandaSound.setVolume(1.6);
                 popPandaSound.play();
 
-                bearPopSoundPlayed = false;
-                dogPopSoundPlayed = false;
-                tigerPopSoundPlayed = false;
-                rhinoPopSoundPlayed = false;
                 pandaPopSoundPlayed = true;
-                pigeonPopSoundPlayed = false;
             }
             if (pandaPopSoundPlayed) {
                 setTimeout(() => popPandaSound.stop(), 100);
@@ -382,7 +421,7 @@ function drawMoreAnimals() {
     }
 
 
-    //is the pigeon is alive, draw the pigeon
+    //if the pigeon is alive, draw the pigeon
     if (pigeonAlive) {
         drawPigeon();
         if (showPigeonTag && pigeonAlive === true) {
@@ -391,16 +430,19 @@ function drawMoreAnimals() {
                 popPigeonSound.setVolume(1.6);
                 popPigeonSound.play();
 
-                bearPopSoundPlayed = false;
-                dogPopSoundPlayed = false;
-                tigerPopSoundPlayed = false;
-                rhinoPopSoundPlayed = false;
-                pandaPopSoundPlayed = false;
                 pigeonPopSoundPlayed = true;
             }
             if (pigeonPopSoundPlayed) {
                 setTimeout(() => popPigeonSound.stop(), 100);
             }
+        }
+    }
+
+    //if the cat is alive, draw the cat
+    if (catAlive) {
+        drawGrumpyCat();
+        if (showCatTag && catAlive === true) {
+            catTag();
         }
     }
 
@@ -414,9 +456,8 @@ function drawGrid() {
     //the grid remains a poor image for 3 seconds
     let squareGrid = millis() - poorTimer < 3000;
 
-    // if the user clicks twice on the grid, they have to wait 10 seconds before the grid can become a poor image again
-
-
+    // if the user clicks twice on the grid, they have to wait 
+    // 10 seconds before the grid can become a poor image again
     if (clickCount >= 2 && millis() - lockTimer > 10000) {
         clickCount = 0;
         isGlitched = false;
@@ -425,6 +466,7 @@ function drawGrid() {
     x = mouseX //random(width);
     y = mouseY //random(height);
 
+    //the circle on the grid changes size every 700 milliseconds
     if (millis() - lastSizeChange > 700) {
         targetSize = targetSize === 20 ? 35 : 20; //toggles between 20 and 35
         lastSizeChange = millis();
@@ -433,6 +475,8 @@ function drawGrid() {
     // always lerp toward target
     gridSize = lerp(gridSize, targetSize, 0.05);
 
+    //the circle turns into a glithced square (poor image)
+    //when the player clicks on it
     if (squareGrid) {
         noStroke();
         fill(0, 255, 0, 50);
@@ -912,6 +956,7 @@ function checkOverlap() {
         }
     }
 
+    //panda
     if (pandaAlive) {
         // gets hit by the grid
         if (x > px && x < px + 80 && y > py && y < py + 80 && !squareActive) {
@@ -934,6 +979,7 @@ function checkOverlap() {
         }
     }
 
+    //pigeon
     if (pigeonAlive) {
         // gets hit by the grid
         if (x > pgx && x < pgx + 80 && y > pgy && y < pgy + 80 && !squareActive) {
@@ -956,6 +1002,28 @@ function checkOverlap() {
         }
     }
 
+    //cat
+    if (catAlive) {
+        if (x > cx && x < cx + 80 && y > cy && y < cy + 80 && !squareActive) {
+            if (catHitReady) {
+                catCount++;
+                catHitReady = false;
+                catColor1 = color(200, 180, 150);
+
+                fill(255, 0, 0, 30);
+                rect(cx, cy, 80, 80);
+                hitSound.setVolume(1.4);
+                if (!hitSound.isPlaying()) {
+                    hitSound.play();
+                }
+            }
+        } else {
+            catHitReady = true;
+            isGlitched = false;
+            catColor1 = color(245, 235, 210);
+        }
+    }
+
     //overlap counter
     // if the animal is hit 3 times, it "dies"
     if (bearCount === 3) {
@@ -974,10 +1042,13 @@ function checkOverlap() {
     if (pandaCount === 3) {
         pandaAlive = false;
 
-
     }
     if (pigeonCount === 3) {
         pigeonAlive = false;
+    }
+
+    if (catCount === 3) {
+        catAlive = false;
     }
 
 }
@@ -1022,10 +1093,18 @@ function moveAnimals() {
 
     if (pgx < 0 || pgx > width - 80) pgspeedX *= -1;
     if (pgy < 0 || pgy > height - 80) pgspeedY *= -1;
+
+    //cat
+    cx += cspeedX;
+    cy += cspeedY;
+
+    if (cx < 0 || cx > width - 80) cspeedX *= -1;
+    if (cy < 0 || cy > height - 80) cspeedY *= -1;
 }
 
 // mouse press function
 function mousePressed() {
+    //restart button
     if (showEnd) {
         if (mouseX > 325 && mouseX < 575 && mouseY > 405 && mouseY < 475) {
             resetGame();
@@ -1037,6 +1116,7 @@ function mousePressed() {
         }
     }
 
+    //start button and instruction pages
     if (showStart) {
         if (mouseX > 705 && mouseX < 755 && mouseY > 130 && mouseY < 180) {
             showRead = false;
@@ -1109,6 +1189,7 @@ function mousePressed() {
         }
     }
 
+    //the circle stays a square fro 3 seconds
     let locked = (clickCount >= 2 && millis() - lockTimer < 10000);
     if (locked) return;
 
@@ -1168,6 +1249,7 @@ function drawBear() {
     pop();
 }
 
+//bear in the instructions
 function drawBearDrawing(bx = 150, by = 100, sz = 1) {
     push();
     translate(bx, by);
@@ -1193,6 +1275,7 @@ function drawBearDrawing(bx = 150, by = 100, sz = 1) {
     circle(55, 32, 8);
     pop();
 }
+//second bear in the instructions
 function drawBearMini(bx, by, sz = 0.5) {
     push();
     fill(bearColor3);
@@ -1235,7 +1318,7 @@ function drawBearMini(bx, by, sz = 0.5) {
     circle(bx + 55, by + 32, 8);
     pop();
 }
-
+//dog
 function drawDog() {
     push();
     noStroke();
@@ -1251,7 +1334,7 @@ function drawDog() {
     ellipse(dx + 40, dy + 55, 15, 10);
     pop();
 }
-
+//tiger
 function drawTiger() {
     push();
 
@@ -1308,7 +1391,7 @@ function drawTiger() {
 
     pop();
 }
-
+//rhino
 function drawRhino() {
     push();
     noStroke();
@@ -1327,7 +1410,7 @@ function drawRhino() {
     circle(rx + 55, ry + 35, 6);
     pop();
 }
-
+//panda
 function drawPanda() {
     push();
     fill(pandaColor2);
@@ -1369,7 +1452,7 @@ function drawPanda() {
     circle(px + 55, py + 32, 8);
     pop();
 }
-
+//pigeon
 function drawPigeon() {
     push();
     noStroke();
@@ -1418,7 +1501,89 @@ function drawPigeon() {
     pop();
 
 }
+//cat
+function drawGrumpyCat() {
+    if (catAlive) {
+        push();
+        noStroke();
 
+        // 1.ears
+        fill(catColor3);
+        triangle(cx + 5, cy + 15, cx + 20, cy - 15, cx + 35, cy + 15); // Left
+        triangle(cx + 45, cy + 15, cx + 60, cy - 15, cx + 75, cy + 15); // Right
+
+        // head
+        fill(catColor1);
+        rect(cx, cy, 80, 80, 15);
+
+
+        fill(catColor4);
+        rect(cx + 3, cy + 10, 75, 70, 15);
+
+        fill(catColor2);
+        rect(cx + 3, cy + 15, 75, 55, 15);
+
+
+        fill(catColor1);
+        rect(cx + 35, cy + 20, 10, 20, 5);
+
+        // face patterns
+        fill(catColor1);
+        // Large blended muzzle patch
+        ellipse(cx + 40, cy + 60, 65, 45);
+
+        fill(catColor3);
+        rect(cx + 12, cy + 20, 26, 30, 8); // Left eye patch
+        rect(cx + 42, cy + 20, 26, 30, 8); // Right eye patch
+
+        // nose
+        fill(catColor3);
+        triangle(cx + 38, cy + 52, cx + 42, cy + 52, cx + 40, cy + 56);
+
+        // mouth
+        stroke(catFrownColor);
+        strokeWeight(2);
+        noFill();
+
+        line(cx + 40, cy + 56, cx + 40, cy + 60);
+
+
+        arc(cx + 34, cy + 60, 12, 12, 180, 360); // Left half of frown
+        arc(cx + 46, cy + 60, 12, 12, 180, 360); // Right half of frown
+
+        noStroke();
+
+        // eyes
+        fill(255);
+        circle(cx + 25, cy + 35, 12);
+        circle(cx + 55, cy + 35, 12);
+
+        fill(151, 210, 232);
+        circle(cx + 25, cy + 35, 11);
+        circle(cx + 55, cy + 35, 11);
+
+        fill(0); // Pupils (tiny, centered)
+        ellipse(cx + 25, cy + 35, 3, 6);
+        ellipse(cx + 55, cy + 35, 3, 6);
+
+        // eye lids
+        fill(catColor2);
+        arc(cx + 25, cy + 35, 14, 16, 180, 360); // Left drooping lid
+        arc(cx + 55, cy + 35, 14, 16, 180, 360); // Right drooping lid
+
+        // Whiskers
+        stroke(200, 150);
+        strokeWeight(1);
+        line(cx + 25, cy + 55, cx + 10, cy + 60);
+        line(cx + 25, cy + 58, cx + 10, cy + 63);
+        line(cx + 55, cy + 55, cx + 70, cy + 60);
+        line(cx + 55, cy + 58, cx + 70, cy + 63);
+
+        pop();
+    }
+}
+
+//green squares (dead animals)
 function digitalBear() {
     if (!bearAlive) {
         digitalize = true;
@@ -1537,8 +1702,31 @@ function digitalPigeon() {
     }
 }
 
+function digitalCat() {
+    if (showCat && !catAlive) {
+        digitalize = true;
+    } else {
+        digitalize = false;
+    }
+    if (digitalize) {
+        stroke(89, 255, 0);
+        fill(89, 255, 0, 50);
+        rect(cx, cy, 80, 80);
+
+        if (!catDieSoundPlayed) {
+            dieSound.setVolume(0.6);
+            dieSound.play();
+            catDieSoundPlayed = true;
+        }
+    }
+}
+
+//end of the game
+//player lost
 function endGame() {
-    if (!bearAlive && !dogAlive && !tigerAlive && !rhinoAlive && !pandaAlive && !pigeonAlive) {
+    if (!bearAlive && !dogAlive && !tigerAlive &&
+        !rhinoAlive && !pandaAlive && !pigeonAlive &&
+        !catAlive) {
         if (!showEnd) {
             finalTime = millis() - startTime;
         }
@@ -1547,6 +1735,7 @@ function endGame() {
     }
 }
 
+//reset button and end message
 function end() {
     push();
     stroke(0, 255, 0);
@@ -1587,6 +1776,7 @@ function end() {
     pop();
 }
 
+//resets the entire game
 function resetGame() {
     push();
     showStart = true;
@@ -1604,6 +1794,7 @@ function resetGame() {
     rhinoCount = 0;
     pandaCount = 0;
     pigeonCount = 0;
+    catCount = 0;
 
 
     bearDieSoundPlayed = false;
@@ -1612,6 +1803,7 @@ function resetGame() {
     rhinoDieSoundPlayed = false;
     pandaDieSoundPlayed = false;
     pigeonDieSoundPlayed = false;
+    catDieSoundPlayed = false;
 
 
     bearAlive = true;
@@ -1620,9 +1812,11 @@ function resetGame() {
     rhinoAlive = true;
     pandaAlive = false;
     pigeonAlive = false;
+    catAlive = false;
 
     showPanda = false;
     showPigeon = false;
+    showCat = false;
 
     showBearTag = false;
     showDogTag = false;
@@ -1630,6 +1824,7 @@ function resetGame() {
     showRhinoTag = false;
     showPandaTag = false;
     showPigeonTag = false;
+    showCatTag = false;
 
     mySound.stop();
     hitSound.stop();
@@ -1642,7 +1837,7 @@ function resetGame() {
     pgx = 100; pgy = 400;
     pop();
 }
-
+//tags (description boxes)
 function bearTag() {
     push();
     stroke(0, 255, 0);
@@ -1768,6 +1963,35 @@ function pigeonTag() {
     pop();
 }
 
+function catTag() {
+    push();
+    stroke(255, 221, 0, 150);
+    strokeWeight(5);
+    noFill();
+    rect(cx - 90, cy + 85, 250, 170);
+
+    stroke(255, 221, 0);
+    strokeWeight(1);
+    fill(255, 221, 0, 50);
+    rect(cx - 90, cy + 85, 250, 170);
+
+    noStroke();
+    fill(255, 221, 0);
+    textSize(18);
+    textAlign(CENTER);
+    text("Tardar Sauce (Grumpy Cat)", cx + 37, cy + 105);
+    textSize(15);
+    text("Age: Deceased", cx - 25, cy + 135);
+    text("Sex: F", cx - 57, cy + 160);
+    textSize(14);
+    text("Tardar Sauce, nicknamed Grumpy Cat,", cx + 35, cy + 185);
+    text("became an internet celebrity", cx + 35, cy + 205);
+    text("after a meme of her went viral in 2012.", cx + 37, cy + 225);
+    text("Sadly, she passed away in 2019.", cx + 37, cy + 245)
+    pop();
+}
+
+//keys 
 function keyPressed() {
     push();
     if (keyCode === 39) {
@@ -1873,9 +2097,28 @@ function keyPressed() {
             }
         }
     }
+
+    if (showCatTag === false) {
+        if (key === "c") {
+            showCatTag = true;
+            popCatSound.stop();
+            popCatSound.setVolume(1.6);
+            popCatSound.play();
+            setTimeout(() => popCatSound.stop(), 1000);
+        }
+    } else if (showCatTag === true) {
+        if (key === "c") {
+            showCatTag = false;
+            closeSound.setVolume(1.6);
+            if (!closeSound.isPlaying()) {
+                closeSound.play();
+            }
+        }
+    }
     pop();
 }
 
+//instructions
 function drawInstructions() {
     push();
     stroke(0)
@@ -2016,6 +2259,10 @@ function drawingTwo() {
     text("Rhino:   r", 470, 400);
     text("Panda:   p", 610, 350);
     text("Pigeon:  g", 610, 400);
+    fill(255, 211, 0);
+    text("Special animal:    c", 480, 465);
+    textSize(13);
+    text("unlock after 2 minutes", 463, 445);
 
     stroke(0, 255, 0);
     fill(0, 255, 0, 50);
@@ -2025,9 +2272,14 @@ function drawingTwo() {
     square(493, 385, 30, 5);
     square(635, 335, 30, 5);
     square(635, 385, 30, 5);
+
+    stroke(255, 211, 0);
+    fill(255, 211, 0, 50);
+    square(545, 450, 30, 5);
     pop();
 }
 
+//timer at the top right corner
 function drawTimer() {
     if (!startTime) return;
     let elapsed = floor((showEnd ? finalTime : millis() - startTime) / 1000);
@@ -2044,6 +2296,7 @@ function drawTimer() {
     pop();
 }
 
+//timer at the top
 function coolDownTimer() {
     push();
     if (clickCount === 2) {
@@ -2059,6 +2312,7 @@ function coolDownTimer() {
     pop();
 }
 
+//message if player did not read instructions
 function drawRead() {
     push();
     fill(0);
