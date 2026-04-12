@@ -105,6 +105,9 @@ let openedPageTwo = false;
 let closedRule = false;
 let showRead = false;
 
+//reminder button
+let showReminder = false;
+
 //speed of the animals and initial position
 // Bear
 let bx = 150, by = 100, bspeedX = 0.4, bspeedY = 1;
@@ -161,13 +164,7 @@ function preload() {
     hitSound = loadSound('assets/sounds/IMG_2831_1.mp3');
     gridSound = loadSound('assets/sounds/IMG_2831_2.mp3');
     dieSound = loadSound('assets/sounds/IMG_2831_3.mp3');
-    popBearSound = loadSound('assets/sounds/IMG_2831_4.mp3');
-    popDogSound = loadSound('assets/sounds/IMG_2831_4.mp3');
-    popTigerSound = loadSound('assets/sounds/IMG_2831_4.mp3');
-    popRhinoSound = loadSound('assets/sounds/IMG_2831_4.mp3');
-    popPandaSound = loadSound('assets/sounds/IMG_2831_4.mp3');
-    popPigeonSound = loadSound('assets/sounds/IMG_2831_4.mp3');
-    popCatSound = loadSound('assets/sounds/IMG_2831_4.mp3');
+    popSound = loadSound('assets/sounds/IMG_2831_4.mp3');
     closeSound = loadSound('assets/sounds/IMG_2831_5.mp3');
 
 }
@@ -205,6 +202,9 @@ function setup() {
 function draw() {
     background(0); // background color
 
+    //makes sure the audio is still running
+    resumeAudio();
+
     //green square when the animal dies
     digitalBear();
     digitalDog();
@@ -225,53 +225,16 @@ function draw() {
     //4 original animals
     if (showBearTag && bearAlive === true) {
         bearTag();
-        if (!popBearSound.isPlaying()) {
-            popBearSound.setVolume(1.6);
-            popBearSound.play();
-
-            bearPopSoundPlayed = true;
-        }
-
-        if (bearPopSoundPlayed) {
-            setTimeout(() => popBearSound.stop(), 100);
-        }
     }
 
     if (showDogTag && dogAlive === true) {
         dogTag();
-        if (!popDogSound.isPlaying()) {
-            popDogSound.setVolume(1.6);
-            popDogSound.play();
-
-            dogPopSoundPlayed = true;
-        }
-        if (dogPopSoundPlayed) {
-            setTimeout(() => popDogSound.stop(), 100);
-        }
     }
     if (showTigerTag && tigerAlive === true) {
         tigerTag();
-        if (!popTigerSound.isPlaying()) {
-            popTigerSound.setVolume(1.6);
-            popTigerSound.play();
-
-            tigerPopSoundPlayed = true;
-        }
-        if (tigerPopSoundPlayed) {
-            setTimeout(() => popTigerSound.stop(), 100);
-        }
     }
     if (showRhinoTag && rhinoAlive === true) {
         rhinoTag();
-        if (!popRhinoSound.isPlaying()) {
-            popRhinoSound.setVolume(1.6);
-            popRhinoSound.play();
-
-            rhinoPopSoundPlayed = true;
-        }
-        if (rhinoPopSoundPlayed) {
-            setTimeout(() => popRhinoSound.stop(), 100);
-        }
     }
 
     //if the animal is alive, draw the animal of the canvas
@@ -324,6 +287,7 @@ function draw() {
         drawGrid();
         drawTimer();
         coolDownTimer();
+        drawReminder();
     }
     endGame();
 }
@@ -408,15 +372,6 @@ function drawMoreAnimals() {
         drawPanda();
         if (showPandaTag && pandaAlive === true) {
             pandaTag();
-            if (!popPandaSound.isPlaying()) {
-                popPandaSound.setVolume(1.6);
-                popPandaSound.play();
-
-                pandaPopSoundPlayed = true;
-            }
-            if (pandaPopSoundPlayed) {
-                setTimeout(() => popPandaSound.stop(), 100);
-            }
         }
     }
 
@@ -426,15 +381,6 @@ function drawMoreAnimals() {
         drawPigeon();
         if (showPigeonTag && pigeonAlive === true) {
             pigeonTag();
-            if (!popPigeonSound.isPlaying()) {
-                popPigeonSound.setVolume(1.6);
-                popPigeonSound.play();
-
-                pigeonPopSoundPlayed = true;
-            }
-            if (pigeonPopSoundPlayed) {
-                setTimeout(() => popPigeonSound.stop(), 100);
-            }
         }
     }
 
@@ -1104,6 +1050,27 @@ function moveAnimals() {
 
 // mouse press function
 function mousePressed() {
+    if (showReminder) {
+        if (mouseX > 860 && mouseX < 890 && mouseY > height / 3 - 50 && mouseY < height / 3 - 20) {
+            showReminder = false;
+            clickSound.setVolume(1.6);
+            if (!clickSound.isPlaying()) {
+                clickSound.play();
+            }
+            return;
+        }
+    }
+
+    if (!showReminder) {
+        if (mouseX > 840 && mouseX < 900 && mouseY > height / 3 && mouseY < height / 3 + 40) {
+            showReminder = true;
+            clickSound.setVolume(1.6);
+            if (!clickSound.isPlaying()) {
+                clickSound.play();
+            }
+            return;
+        }
+    }
     //restart button
     if (showEnd) {
         if (mouseX > 325 && mouseX < 575 && mouseY > 405 && mouseY < 475) {
@@ -1164,6 +1131,7 @@ function mousePressed() {
                 showGrid = true;
                 showStart = false;
                 showRead = false;
+                showReminder = true;
                 startTime = millis();
 
                 mySound.setVolume(0.6);
@@ -1796,7 +1764,6 @@ function resetGame() {
     pigeonCount = 0;
     catCount = 0;
 
-
     bearDieSoundPlayed = false;
     dogDieSoundPlayed = false;
     tigerDieSoundPlayed = false;
@@ -1804,7 +1771,6 @@ function resetGame() {
     pandaDieSoundPlayed = false;
     pigeonDieSoundPlayed = false;
     catDieSoundPlayed = false;
-
 
     bearAlive = true;
     dogAlive = true;
@@ -1825,6 +1791,15 @@ function resetGame() {
     showPandaTag = false;
     showPigeonTag = false;
     showCatTag = false;
+
+    showRule = false;
+    showPageOne = false;
+    showPageTwo = false;
+
+    openedPageOne = false;
+    openedPageTwo = false;
+    closedRule = false;
+    showRead = false;
 
     mySound.stop();
     hitSound.stop();
@@ -2015,6 +1990,9 @@ function keyPressed() {
     if (showBearTag === false) {
         if (key === "b") {
             showBearTag = true
+            popSound.stop();
+            popSound.setVolume(1.6);
+            popSound.play();
         }
     }
     else if (showBearTag === true) {
@@ -2030,6 +2008,9 @@ function keyPressed() {
     if (showDogTag === false) {
         if (key === "d") {
             showDogTag = true
+            popSound.stop();
+            popSound.setVolume(1.6);
+            popSound.play();
         }
     }
     else if (showDogTag === true) {
@@ -2044,6 +2025,9 @@ function keyPressed() {
     if (showTigerTag === false) {
         if (key === "t") {
             showTigerTag = true
+            popSound.stop();
+            popSound.setVolume(1.6);
+            popSound.play();
         }
     }
     else if (showTigerTag === true) {
@@ -2058,6 +2042,9 @@ function keyPressed() {
     if (showRhinoTag === false) {
         if (key === "r") {
             showRhinoTag = true
+            popSound.stop();
+            popSound.setVolume(1.6);
+            popSound.play();
         }
     }
     else if (showRhinoTag === true) {
@@ -2072,6 +2059,9 @@ function keyPressed() {
     if (showPandaTag === false) {
         if (key === "p") {
             showPandaTag = true
+            popSound.stop();
+            popSound.setVolume(1.6);
+            popSound.play();
         }
     }
     else if (showPandaTag === true) {
@@ -2086,6 +2076,9 @@ function keyPressed() {
     if (showPigeonTag === false) {
         if (key === "g") {
             showPigeonTag = true
+            popSound.stop();
+            popSound.setVolume(1.6);
+            popSound.play();
         }
     }
     else if (showPigeonTag === true) {
@@ -2101,10 +2094,9 @@ function keyPressed() {
     if (showCatTag === false) {
         if (key === "c") {
             showCatTag = true;
-            popCatSound.stop();
-            popCatSound.setVolume(1.6);
-            popCatSound.play();
-            setTimeout(() => popCatSound.stop(), 1000);
+            popSound.stop();
+            popSound.setVolume(1.6);
+            popSound.play();
         }
     } else if (showCatTag === true) {
         if (key === "c") {
@@ -2337,5 +2329,89 @@ function drawRead() {
     textSize(20);
     textAlign(RIGHT, CENTER);
 
+    pop();
+}
+
+//makes sure the audio is still running even with no user interaction
+function resumeAudio() {
+    let ctx = getAudioContext();
+    if (ctx.state === 'suspended') {
+        ctx.resume();
+    }
+}
+//reminder box and button
+function drawReminder() {
+    push();
+    if (showReminder) {
+        reminderButton();
+        textAlign(CENTER, CENTER);
+        stroke(0, 255, 0);
+        fill(0, 255, 0, 50);
+        rect(690, height / 3 - 50, 200, 300, 5);
+
+        noStroke();
+        fill(0, 255, 0);
+        textAlign(LEFT);
+        textSize(18);
+        text("Get to know the", 710, 175);
+        text("animals!", 710, 195);
+
+        textAlign(LEFT);
+        textSize(15)
+        text("Bear:", 710, 230);
+        text("Dog:", 710, 260);
+        text("Tiger:", 710, 290);
+        text("Rhino:", 710, 320);
+        text("Panda:", 710, 350);
+        text("Pigeon:", 710, 380);
+
+        text("b", 850, 230);
+        text("d", 850, 260);
+        text("t", 852.5, 290);
+        text("r", 852, 320);
+        text("p", 850, 348);
+        text("g", 850, 378);
+
+        stroke(0, 255, 0);
+        fill(0, 255, 0, 50);
+        rect(842, 216.5, 25, 25, 5);
+        rect(842, 246.5, 25, 25, 5);
+        rect(842, 276.5, 25, 25, 5);
+        rect(842, 306.5, 25, 25, 5);
+        rect(842, 336.5, 25, 25, 5);
+        rect(842, 366.5, 25, 25, 5);
+
+        noStroke();
+        fill(255, 211, 0);
+        text("special animal:", 710, 410);
+        text("c", 851, 409);
+
+        stroke(255, 211, 0);
+        fill(255, 211, 0, 50);
+        rect(842, 396.5, 25, 25, 5);
+    }
+    else if (!showReminder) {
+        fill(0, 255, 0);
+        textAlign(CENTER);
+        textSize(10);
+        text("Click here", 872, height / 3 + 13);
+
+        stroke(0, 255, 0);
+        fill(0, 255, 0, 30);
+        rect(840, height / 3, 60, 20);
+    }
+    pop();
+}
+
+function reminderButton() {
+    push();
+    stroke(0, 255, 0);
+    fill(0, 255, 0, 50);
+    rect(860, height / 3 - 50, 30, 30, 5);
+
+    textAlign(CENTER, CENTER);
+    textSize(20);
+    fill(0, 255, 0);
+    text("x", 875, 163.5);
     pop();
 }
