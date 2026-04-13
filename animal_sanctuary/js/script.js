@@ -956,17 +956,17 @@ function checkOverlap() {
             if (catHitReady) {
                 catCount++;
                 catHitReady = false;
-                catColor1 = color(196, 82, 82);
-                catColor2 = color(168, 47, 47);
-                catColor3 = color(60, 35, 35);
-                catColor4 = color(143, 73, 61);
+            }
+            catColor1 = color(196, 82, 82);
+            catColor2 = color(168, 47, 47);
+            catColor3 = color(60, 35, 35);
+            catColor4 = color(143, 73, 61);
 
-                fill(255, 0, 0, 30);
-                rect(cx, cy, 80, 80);
-                hitSound.setVolume(1.4);
-                if (!hitSound.isPlaying()) {
-                    hitSound.play();
-                }
+            fill(255, 0, 0, 30);
+            rect(cx, cy, 80, 80);
+            hitSound.setVolume(1.4);
+            if (!hitSound.isPlaying()) {
+                hitSound.play();
             }
         } else {
             catHitReady = true;
@@ -1998,21 +1998,25 @@ function keyPressed() {
     if (showBearTag === false) {
         if (key === "b") {
             showBearTag = true
-            popSound.stop();
-            popSound.setVolume(1.6);
-            popSound.play();
-            setTimeout(() => {
-                bearSound.setVolume(2);
-                bearSound.play();
-            }, 500);
+            if (showBearTag && bearAlive) {
+                popSound.stop();
+                popSound.setVolume(1.6);
+                popSound.play();
+                setTimeout(() => {
+                    bearSound.setVolume(2);
+                    bearSound.play();
+                }, 500);
+            }
         }
     }
     else if (showBearTag === true) {
         if (key === "b") {
             showBearTag = false
-            closeSound.setVolume(1.6);
-            if (!closeSound.isPlaying()) {
-                closeSound.play();
+            if (!showBearTag && bearAlive) {
+                closeSound.setVolume(1.6);
+                if (!closeSound.isPlaying()) {
+                    closeSound.play();
+                }
             }
         }
     }
@@ -2020,63 +2024,75 @@ function keyPressed() {
     if (showDogTag === false) {
         if (key === "d") {
             showDogTag = true
-            popSound.stop();
-            popSound.setVolume(1.6);
-            popSound.play();
-            setTimeout(() => {
-                dogSound.setVolume(2);
-                dogSound.play();
-            }, 500);
+            if (showDogTag && dogAlive) {
+                popSound.stop();
+                popSound.setVolume(1.6);
+                popSound.play();
+                setTimeout(() => {
+                    dogSound.setVolume(2);
+                    dogSound.play();
+                }, 500);
+            }
         }
     }
     else if (showDogTag === true) {
         if (key === "d") {
             showDogTag = false
-            closeSound.setVolume(1.6);
-            if (!closeSound.isPlaying()) {
-                closeSound.play();
+            if (!showDogTag && dogAlive) {
+                closeSound.setVolume(1.6);
+                if (!closeSound.isPlaying()) {
+                    closeSound.play();
+                }
             }
         }
     }
     if (showTigerTag === false) {
         if (key === "t") {
             showTigerTag = true
-            popSound.stop();
-            popSound.setVolume(1.6);
-            popSound.play();
-            setTimeout(() => {
-                tigerSound.setVolume(2);
-                tigerSound.play();
-            }, 500);
+            if (showTigerTag && tigerAlive) {
+                popSound.stop();
+                popSound.setVolume(1.6);
+                popSound.play();
+                setTimeout(() => {
+                    tigerSound.setVolume(2);
+                    tigerSound.play();
+                }, 500);
+            }
         }
     }
     else if (showTigerTag === true) {
         if (key === "t") {
             showTigerTag = false
-            closeSound.setVolume(1.6);
-            if (!closeSound.isPlaying()) {
-                closeSound.play();
+            if (!showTigerTag && tigerAlive) {
+                closeSound.setVolume(1.6);
+                if (!closeSound.isPlaying()) {
+                    closeSound.play();
+                }
             }
         }
     }
     if (showRhinoTag === false) {
         if (key === "r") {
             showRhinoTag = true
-            popSound.stop();
-            popSound.setVolume(1.6);
-            popSound.play();
-            setTimeout(() => {
-                rhinoSound.setVolume(2);
-                rhinoSound.play();
-            }, 500);
+            if (showRhinoTag && rhinoAlive) {
+                popSound.stop();
+                popSound.setVolume(1.6);
+                popSound.play();
+                setTimeout(() => {
+                    rhinoSound.setVolume(2);
+                    rhinoSound.play();
+                }, 500);
+            }
         }
     }
     else if (showRhinoTag === true) {
         if (key === "r") {
             showRhinoTag = false
-            closeSound.setVolume(1.6);
-            if (!closeSound.isPlaying()) {
-                closeSound.play();
+            if (!showRhinoTag && rhinoAlive) {
+                closeSound.setVolume(1.6);
+                if (!closeSound.isPlaying()) {
+                    closeSound.play();
+                }
 
             }
         }
@@ -2084,42 +2100,50 @@ function keyPressed() {
     if (showPandaTag === false) {
         if (key === "p") {
             showPandaTag = true
-            popSound.stop();
-            popSound.setVolume(1.6);
-            popSound.play();
-            setTimeout(() => {
-                pandaSound.setVolume(2);
-                pandaSound.play();
-            }, 500);
+            if (showPandaTag && pandaAlive) {
+                popSound.stop();
+                popSound.setVolume(1.6);
+                popSound.play();
+                setTimeout(() => {
+                    pandaSound.setVolume(2);
+                    pandaSound.play();
+                }, 500);
+            }
         }
     }
     else if (showPandaTag === true) {
         if (key === "p") {
             showPandaTag = false
-            closeSound.setVolume(1.6);
-            if (!closeSound.isPlaying()) {
-                closeSound.play();
+            if (!showPandaTag && pandaAlive) {
+                closeSound.setVolume(1.6);
+                if (!closeSound.isPlaying()) {
+                    closeSound.play();
+                }
             }
         }
     }
     if (showPigeonTag === false) {
         if (key === "g") {
             showPigeonTag = true
-            popSound.stop();
-            popSound.setVolume(1.6);
-            popSound.play();
-            setTimeout(() => {
-                pigeonSound.setVolume(2);
-                pigeonSound.play();
-            }, 500);
+            if (showPigeonTag && pigeonlive) {
+                popSound.stop();
+                popSound.setVolume(1.6);
+                popSound.play();
+                setTimeout(() => {
+                    pigeonSound.setVolume(2);
+                    pigeonSound.play();
+                }, 500);
+            }
         }
     }
     else if (showPigeonTag === true) {
         if (key === "g") {
             showPigeonTag = false
-            closeSound.setVolume(1.6);
-            if (!closeSound.isPlaying()) {
-                closeSound.play();
+            if (!showPigeonTag && pigeonAlive) {
+                closeSound.setVolume(1.6);
+                if (!closeSound.isPlaying()) {
+                    closeSound.play();
+                }
             }
         }
     }
@@ -2127,20 +2151,24 @@ function keyPressed() {
     if (showCatTag === false) {
         if (key === "c") {
             showCatTag = true;
-            popSound.stop();
-            popSound.setVolume(1.6);
-            popSound.play();
-            setTimeout(() => {
-                catSound.setVolume(2);
-                catSound.play();
-            }, 500);
+            if (showCatTag && catAlive) {
+                popSound.stop();
+                popSound.setVolume(1.6);
+                popSound.play();
+                setTimeout(() => {
+                    catSound.setVolume(2);
+                    catSound.play();
+                }, 500);
+            }
         }
     } else if (showCatTag === true) {
         if (key === "c") {
             showCatTag = false;
-            closeSound.setVolume(1.6);
-            if (!closeSound.isPlaying()) {
-                closeSound.play();
+            if (!showCatTag && catAlive) {
+                closeSound.setVolume(1.6);
+                if (!closeSound.isPlaying()) {
+                    closeSound.play();
+                }
             }
         }
     }
