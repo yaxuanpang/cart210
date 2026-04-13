@@ -2125,7 +2125,7 @@ function keyPressed() {
     if (showPigeonTag === false) {
         if (key === "g") {
             showPigeonTag = true
-            if (showPigeonTag && pigeonlive) {
+            if (showPigeonTag && pigeonAlive) {
                 popSound.stop();
                 popSound.setVolume(1.6);
                 popSound.play();
