@@ -130,14 +130,16 @@ let clickSound;
 let hitSound;
 let gridSound;
 let dieSound;
-let popBearSound;
-let popDogSound;
-let popTigerSound;
-let popRhinoSound;
-let popPandaSound;
-let popPigeonSound;
-let popCatSound;
+let popSound;
 let closeSound;
+
+let bearSound;
+let dogSound;
+let tigerSound;
+let rhinoSound;
+let pandaSound;
+let pigeonSound;
+let catSound;
 
 let bearDieSoundPlayed = false;
 let dogDieSoundPlayed = false;
@@ -146,14 +148,6 @@ let rhinoDieSoundPlayed = false;
 let pandaDieSoundPlayed = false;
 let pigeonDieSoundPlayed = false;
 let catDieSoundPlayed = false;
-
-let bearPopSoundPlayed = false;
-let dogPopSoundPlayed = false;
-let tigerPopSoundPlayed = false;
-let rhinoPopSoundPlayed = false;
-let pandaPopSoundPlayed = false;
-let pigeonPopSoundPlayed = false;
-let CatPopSoundPlayed = false;
 
 //preloading the sound effects
 function preload() {
@@ -166,6 +160,14 @@ function preload() {
     dieSound = loadSound('assets/sounds/IMG_2831_3.mp3');
     popSound = loadSound('assets/sounds/IMG_2831_4.mp3');
     closeSound = loadSound('assets/sounds/IMG_2831_5.mp3');
+
+    bearSound = loadSound('assets/sounds/IMG_2831_6.mp3');
+    dogSound = loadSound('assets/sounds/IMG_2831_7.mp3');
+    tigerSound = loadSound('assets/sounds/IMG_2831_8.mp3');
+    rhinoSound = loadSound('assets/sounds/IMG_2831_9.mp3');
+    pandaSound = loadSound('assets/sounds/IMG_2831_10.mp3');
+    pigeonSound = loadSound('assets/sounds/IMG_2831_11.mp3');
+    catSound = loadSound('assets/sounds/IMG_2831_12.mp3');
 
 }
 
@@ -954,7 +956,10 @@ function checkOverlap() {
             if (catHitReady) {
                 catCount++;
                 catHitReady = false;
-                catColor1 = color(200, 180, 150);
+                catColor1 = color(196, 82, 82);
+                catColor2 = color(168, 47, 47);
+                catColor3 = color(60, 35, 35);
+                catColor4 = color(143, 73, 61);
 
                 fill(255, 0, 0, 30);
                 rect(cx, cy, 80, 80);
@@ -967,6 +972,9 @@ function checkOverlap() {
             catHitReady = true;
             isGlitched = false;
             catColor1 = color(245, 235, 210);
+            catColor2 = color(92, 69, 53);
+            catColor3 = color(60, 45, 35);
+            catColor4 = color(143, 104, 61);
         }
     }
 
@@ -1993,6 +2001,10 @@ function keyPressed() {
             popSound.stop();
             popSound.setVolume(1.6);
             popSound.play();
+            setTimeout(() => {
+                bearSound.setVolume(2);
+                bearSound.play();
+            }, 500);
         }
     }
     else if (showBearTag === true) {
@@ -2011,6 +2023,10 @@ function keyPressed() {
             popSound.stop();
             popSound.setVolume(1.6);
             popSound.play();
+            setTimeout(() => {
+                dogSound.setVolume(2);
+                dogSound.play();
+            }, 500);
         }
     }
     else if (showDogTag === true) {
@@ -2028,6 +2044,10 @@ function keyPressed() {
             popSound.stop();
             popSound.setVolume(1.6);
             popSound.play();
+            setTimeout(() => {
+                tigerSound.setVolume(2);
+                tigerSound.play();
+            }, 500);
         }
     }
     else if (showTigerTag === true) {
@@ -2045,6 +2065,10 @@ function keyPressed() {
             popSound.stop();
             popSound.setVolume(1.6);
             popSound.play();
+            setTimeout(() => {
+                rhinoSound.setVolume(2);
+                rhinoSound.play();
+            }, 500);
         }
     }
     else if (showRhinoTag === true) {
@@ -2053,6 +2077,7 @@ function keyPressed() {
             closeSound.setVolume(1.6);
             if (!closeSound.isPlaying()) {
                 closeSound.play();
+
             }
         }
     }
@@ -2062,6 +2087,10 @@ function keyPressed() {
             popSound.stop();
             popSound.setVolume(1.6);
             popSound.play();
+            setTimeout(() => {
+                pandaSound.setVolume(2);
+                pandaSound.play();
+            }, 500);
         }
     }
     else if (showPandaTag === true) {
@@ -2079,6 +2108,10 @@ function keyPressed() {
             popSound.stop();
             popSound.setVolume(1.6);
             popSound.play();
+            setTimeout(() => {
+                pigeonSound.setVolume(2);
+                pigeonSound.play();
+            }, 500);
         }
     }
     else if (showPigeonTag === true) {
@@ -2097,6 +2130,10 @@ function keyPressed() {
             popSound.stop();
             popSound.setVolume(1.6);
             popSound.play();
+            setTimeout(() => {
+                catSound.setVolume(2);
+                catSound.play();
+            }, 500);
         }
     } else if (showCatTag === true) {
         if (key === "c") {
