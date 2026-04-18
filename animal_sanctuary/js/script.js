@@ -206,6 +206,10 @@ function draw() {
     //makes sure the audio is still running
     resumeAudio();
 
+    extraLines();// extra grid lines
+    checkOverlap(); // checks if the grid overlaps with animals
+    drawMoreAnimals(); // panda, pigeon, cat
+
     //green square when the animal dies
     digitalBear();
     digitalDog();
@@ -214,10 +218,6 @@ function draw() {
     digitalPanda();
     digitalPigeon();
     digitalCat();
-
-    extraLines();// extra grid lines
-    checkOverlap(); // checks if the grid overlaps with animals
-    drawMoreAnimals(); // panda, pigeon, cat
 
     //move the animals and check for overlaps
     moveAnimals();
@@ -363,7 +363,7 @@ function drawMoreAnimals() {
     }
 
     // if the game is still going and 2 minutes have passed, catAlive is true
-    if (!showEnd && currentTime > 120000 && !showCat) {
+    if (!showEnd && currentTime > 30000 && !showCat) {
         catAlive = true;
         showCat = true;
     }
@@ -398,7 +398,7 @@ function drawMoreAnimals() {
 //function to draw the grid
 function drawGrid() {
     push();
-    moveGrid();
+    //moveGrid();
 
     //the grid remains a poor image for 3 seconds
     let squareGrid = millis() - poorTimer < 3000;
@@ -410,8 +410,8 @@ function drawGrid() {
         isGlitched = false;
     }
 
-    // x = mouseX //random(width);
-    // y = mouseY //random(height);
+    x = mouseX //random(width);
+    y = mouseY //random(height);
 
     //the circle on the grid changes size every 700 milliseconds
     if (millis() - lastSizeChange > 700) {
@@ -961,8 +961,6 @@ function checkOverlap() {
             catColor3 = color(60, 35, 35);
             catColor4 = color(143, 73, 61);
 
-            fill(255, 0, 0, 30);
-            rect(cx, cy, 80, 80);
             hitSound.setVolume(1.4);
             if (!hitSound.isPlaying()) {
                 hitSound.play();
@@ -1638,7 +1636,7 @@ function digitalPigeon() {
 }
 
 function digitalCat() {
-    if (showCat && !catAlive) {
+    if (showCat && catAlive === false) {
         stroke(89, 255, 0);
         fill(89, 255, 0, 50);
         rect(cx, cy, 80, 80);
