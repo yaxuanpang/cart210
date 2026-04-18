@@ -78,7 +78,6 @@ let showCat = false;
 let showGrid = false;
 let showStart = true;
 
-let digitalize = false;
 let showEnd = false;
 
 //grid circle size
@@ -1562,16 +1561,9 @@ function drawGrumpyCat() {
 //green squares (dead animals)
 function digitalBear() {
     if (!bearAlive) {
-        digitalize = true;
-    }
-    else {
-        digitalize = false;
-    }
-    if (digitalize) {
         stroke(89, 255, 0);
-        fill(89, 255, 0, 50)
+        fill(89, 255, 0, 50);
         rect(bx, by, 80, 80);
-
         if (!bearDieSoundPlayed) {
             dieSound.setVolume(0.6);
             dieSound.play();
@@ -1582,16 +1574,9 @@ function digitalBear() {
 
 function digitalDog() {
     if (!dogAlive) {
-        digitalize = true;
-    }
-    else {
-        digitalize = false;
-    }
-    if (digitalize) {
         stroke(89, 255, 0);
-        fill(89, 255, 0, 50)
+        fill(89, 255, 0, 50);
         rect(dx, dy, 80, 80);
-
         if (!dogDieSoundPlayed) {
             dieSound.setVolume(0.6);
             dieSound.play();
@@ -1602,16 +1587,9 @@ function digitalDog() {
 
 function digitalTiger() {
     if (!tigerAlive) {
-        digitalize = true;
-    }
-    else {
-        digitalize = false;
-    }
-    if (digitalize) {
         stroke(89, 255, 0);
-        fill(89, 255, 0, 50)
+        fill(89, 255, 0, 50);
         rect(tx, ty, 80, 80);
-
         if (!tigerDieSoundPlayed) {
             dieSound.setVolume(0.6);
             dieSound.play();
@@ -1622,16 +1600,9 @@ function digitalTiger() {
 
 function digitalRhino() {
     if (!rhinoAlive) {
-        digitalize = true;
-    }
-    else {
-        digitalize = false;
-    }
-    if (digitalize) {
         stroke(89, 255, 0);
-        fill(89, 255, 0, 50)
+        fill(89, 255, 0, 50);
         rect(rx, ry, 80, 80);
-
         if (!rhinoDieSoundPlayed) {
             dieSound.setVolume(0.6);
             dieSound.play();
@@ -1642,15 +1613,9 @@ function digitalRhino() {
 
 function digitalPanda() {
     if (showPanda && !pandaAlive) {
-        digitalize = true;
-    } else {
-        digitalize = false;
-    }
-    if (digitalize) {
         stroke(89, 255, 0);
-        fill(89, 255, 0, 50)
+        fill(89, 255, 0, 50);
         rect(px, py, 80, 80);
-
         if (!pandaDieSoundPlayed) {
             dieSound.setVolume(0.6);
             dieSound.play();
@@ -1661,15 +1626,9 @@ function digitalPanda() {
 
 function digitalPigeon() {
     if (showPigeon && !pigeonAlive) {
-        digitalize = true;
-    } else {
-        digitalize = false;
-    }
-    if (digitalize) {
         stroke(89, 255, 0);
-        fill(89, 255, 0, 50)
+        fill(89, 255, 0, 50);
         rect(pgx, pgy, 80, 80);
-
         if (!pigeonDieSoundPlayed) {
             dieSound.setVolume(0.6);
             dieSound.play();
@@ -1680,15 +1639,9 @@ function digitalPigeon() {
 
 function digitalCat() {
     if (showCat && !catAlive) {
-        digitalize = true;
-    } else {
-        digitalize = false;
-    }
-    if (digitalize) {
         stroke(89, 255, 0);
         fill(89, 255, 0, 50);
         rect(cx, cy, 80, 80);
-
         if (!catDieSoundPlayed) {
             dieSound.setVolume(0.6);
             dieSound.play();
@@ -1696,13 +1649,16 @@ function digitalCat() {
         }
     }
 }
-
 //end of the game
 //player lost
 function endGame() {
-    if (!bearAlive && !dogAlive && !tigerAlive &&
-        !rhinoAlive && !pandaAlive && !pigeonAlive &&
-        !catAlive) {
+    // only check animals that have actually appeared
+    let originalsDead = !bearAlive && !dogAlive && !tigerAlive && !rhinoAlive;
+    let pandaDead = !showPanda || !pandaAlive;
+    let pigeonDead = !showPigeon || !pigeonAlive;
+    let catDead = !showCat || !catAlive;
+
+    if (originalsDead && pandaDead && pigeonDead && catDead && showGrid) {
         if (!showEnd) {
             finalTime = millis() - startTime;
         }
@@ -1758,7 +1714,6 @@ function resetGame() {
     showStart = true;
     showEnd = false;
     showGrid = false;
-    digitalize = false;
 
     clickCount = 0;
     finalTime = 0;
