@@ -363,7 +363,7 @@ function drawMoreAnimals() {
     }
 
     // if the game is still going and 2 minutes have passed, catAlive is true
-    if (!showEnd && currentTime > 30000 && !showCat) {
+    if (!showEnd && currentTime > 120000 && !showCat) {
         catAlive = true;
         showCat = true;
     }
@@ -398,7 +398,7 @@ function drawMoreAnimals() {
 //function to draw the grid
 function drawGrid() {
     push();
-    //moveGrid();
+    moveGrid();
 
     //the grid remains a poor image for 3 seconds
     let squareGrid = millis() - poorTimer < 3000;
@@ -410,8 +410,8 @@ function drawGrid() {
         isGlitched = false;
     }
 
-    x = mouseX //random(width);
-    y = mouseY //random(height);
+    // x = mouseX //random(width);
+    // y = mouseY //random(height);
 
     //the circle on the grid changes size every 700 milliseconds
     if (millis() - lastSizeChange > 700) {
