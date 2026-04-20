@@ -1948,7 +1948,7 @@ function keyPressed() {
             clickSound.play();
         }
     }
-    if (showBearTag === false) {
+    if (showBearTag === false && bearAlive) {
         if (key === "b") {
             showBearTag = true
             if (showBearTag && bearAlive) {
@@ -1962,7 +1962,7 @@ function keyPressed() {
             }
         }
     }
-    else if (showBearTag === true) {
+    else if (showBearTag === true && bearAlive) {
         if (key === "b") {
             showBearTag = false
             if (!showBearTag && bearAlive) {
@@ -1974,7 +1974,7 @@ function keyPressed() {
         }
     }
 
-    if (showDogTag === false) {
+    if (showDogTag === false && dogAlive) {
         if (key === "d") {
             showDogTag = true
             if (showDogTag && dogAlive) {
@@ -1988,7 +1988,7 @@ function keyPressed() {
             }
         }
     }
-    else if (showDogTag === true) {
+    else if (showDogTag === true && dogAlive) {
         if (key === "d") {
             showDogTag = false
             if (!showDogTag && dogAlive) {
@@ -1999,7 +1999,7 @@ function keyPressed() {
             }
         }
     }
-    if (showTigerTag === false) {
+    if (showTigerTag === false && tigerAlive) {
         if (key === "t") {
             showTigerTag = true
             if (showTigerTag && tigerAlive) {
@@ -2013,7 +2013,7 @@ function keyPressed() {
             }
         }
     }
-    else if (showTigerTag === true) {
+    else if (showTigerTag === true && tigerAlive) {
         if (key === "t") {
             showTigerTag = false
             if (!showTigerTag && tigerAlive) {
@@ -2024,7 +2024,7 @@ function keyPressed() {
             }
         }
     }
-    if (showRhinoTag === false) {
+    if (showRhinoTag === false && rhinoAlive) {
         if (key === "r") {
             showRhinoTag = true
             if (showRhinoTag && rhinoAlive) {
@@ -2038,7 +2038,7 @@ function keyPressed() {
             }
         }
     }
-    else if (showRhinoTag === true) {
+    else if (showRhinoTag === true && rhinoAlive) {
         if (key === "r") {
             showRhinoTag = false
             if (!showRhinoTag && rhinoAlive) {
@@ -2050,7 +2050,7 @@ function keyPressed() {
             }
         }
     }
-    if (showPandaTag === false) {
+    if (showPandaTag === false && pandaAlive) {
         if (key === "p") {
             showPandaTag = true
             if (showPandaTag && pandaAlive) {
@@ -2064,7 +2064,7 @@ function keyPressed() {
             }
         }
     }
-    else if (showPandaTag === true) {
+    else if (showPandaTag === true && pandaAlive) {
         if (key === "p") {
             showPandaTag = false
             if (!showPandaTag && pandaAlive) {
@@ -2075,7 +2075,7 @@ function keyPressed() {
             }
         }
     }
-    if (showPigeonTag === false) {
+    if (showPigeonTag === false && pigeonAlive) {
         if (key === "g") {
             showPigeonTag = true
             if (showPigeonTag && pigeonAlive) {
@@ -2089,7 +2089,7 @@ function keyPressed() {
             }
         }
     }
-    else if (showPigeonTag === true) {
+    else if (showPigeonTag === true && pigeonAlive) {
         if (key === "g") {
             showPigeonTag = false
             if (!showPigeonTag && pigeonAlive) {
@@ -2101,7 +2101,7 @@ function keyPressed() {
         }
     }
 
-    if (showCatTag === false) {
+    if (showCatTag === false && catAlive) {
         if (key === "c") {
             showCatTag = true;
             if (showCatTag && catAlive) {
@@ -2114,7 +2114,7 @@ function keyPressed() {
                 }, 500);
             }
         }
-    } else if (showCatTag === true) {
+    } else if (showCatTag === true && catAlive) {
         if (key === "c") {
             showCatTag = false;
             if (!showCatTag && catAlive) {
