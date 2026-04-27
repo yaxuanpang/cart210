@@ -126,6 +126,14 @@ let pgx = 100, pgy = 400, pgspeedX = 1.2, pgspeedY = -0.5;
 //cat
 let cx = 200, cy = 300, cspeedX = 0.8, cspeedY = 1.2;
 
+//sold box
+let sold = {
+    x: 1,
+    y: 1,
+}
+showReminder = true;
+showSold = true;
+
 //sounds
 let mySound;
 let clickSound;
@@ -292,6 +300,10 @@ function draw() {
         drawTimer();
         coolDownTimer();
         drawReminder();
+        if (showSold) {
+            drawSold();
+        }
+        drawSoldButton();
     }
     endGame();
 }
@@ -1063,6 +1075,13 @@ function moveAnimals() {
 
 // mouse press function
 function mousePressed() {
+    if (mouseX > 0 && mouseX < 30 && mouseY > 50 && mouseY < 90 && !showSold) {
+        showSold = true;
+    }
+
+    if (mouseX > 250 && mouseX < 280 && mouseY > 50 && mouseY < 90 && showSold) {
+        showSold = false;
+    }
     if (showReminder) {
         if (mouseX > 860 && mouseX < 890 && mouseY > height / 3 - 50 && mouseY < height / 3 - 20) {
             showReminder = false;
@@ -2441,5 +2460,82 @@ function reminderButton() {
     textSize(20);
     fill(0, 255, 0);
     text("x", 875, 163.5);
+    pop();
+}
+
+function drawSold() {
+    push();
+    soldRule();
+    stroke(0, 255, 0);
+    fill(0, 255, 0, 50);
+    rect(sold.x, sold.y, 250, 400, 5);
+    pop();
+}
+
+function drawSoldButton() {
+    push();
+    if (showSold) {
+        stroke(0, 255, 0);
+        fill(0, 255, 0, 80);
+
+        rect(251, 50, 30, 40);
+
+        fill(0, 255, 0);
+        triangle(260, 70, 268, 80, 268, 60);
+    }
+    if (!showSold) {
+        stroke(0, 255, 0);
+        fill(0, 255, 0, 80);
+
+        rect(1, 50, 30, 40);
+
+        fill(0, 255, 0);
+        // text("->", 10, 74);
+        triangle(21, 70, 11, 80, 11, 60);
+    }
+
+    pop();
+}
+
+function soldRule() {
+    push();
+    soldDrawing();
+    textSize(35);
+    noFill();
+    stroke(0, 255, 0);
+    text("TRADE!!", 55, 47);
+    textSize(20);
+    noStroke();
+    fill(0, 255, 0);
+    text("Give me your information!", 10, 75);
+    pop();
+}
+
+function soldDrawing() {
+    push();
+    stroke(0, 255, 0);
+    fill(0, 255, 0, 50);
+    rect(10, 120, 25, 25, 5);
+    rect(10, 220, 25, 25, 5);
+    rect(10, 320, 25, 25, 5);
+
+    fill(0, 255, 0);
+    textSize(18);
+    text("1", 17, 138.5);
+    text("2", 17, 238.5);
+    text("3", 17, 338.5);
+
+    noStroke();
+    textSize(18);
+    text("Slow down hacker speed", 40, 138.5);
+    text("Longer glitch time", 40, 238.5);
+    text("Shorter cooldown time", 40, 338.5);
+
+    textSize(11);
+    text("Duration: 5 seconds", 10, 163);
+    text("Continues at regular speed afterwards", 10, 176);
+    text("The glitch will last twice as long on the", 10, 263);
+    text("next click", 10, 276);
+    text("Next cooldown time will only be 3 seconds", 10, 363);
     pop();
 }
