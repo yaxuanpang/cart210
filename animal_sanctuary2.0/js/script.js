@@ -20,6 +20,11 @@ let catCount = 0;
 let waveSpeed = 0.02;
 let waveHeight = 100;
 
+let waveInitialSpeed = 0.02;
+let slowWaveTimer = 0;
+let slowDown = false;
+
+
 let bearAlive = true;
 let bearHitReady = true;
 
@@ -815,6 +820,11 @@ function extraLines() {
 //move the grid in a wave motion across the screen
 function moveGrid() {
     let currentTime = millis() - startTime;
+
+    if (slowDown && millis() - slowWaveTimer > 5000) {
+        slowDown = false;
+    }
+
     x += 1.5;
     if (x > width + 10) {
         x = 0 - 10;
@@ -823,10 +833,18 @@ function moveGrid() {
     waveHeight = 100;
     y = yOffset + sin(degrees(x * waveSpeed)) * waveHeight;
 
-    if (currentTime > 25000) {
-        waveSpeed += 0.000001;
+    if (currentTime > 30000) {
+        waveSpeed += 0.00001;
+        if (waveSpeed >= 0.08) {
+            waveSpeed = 0.08;
+        }
     }
 
+    if (slowDown) {
+        y = yOffset + sin(degrees(x * waveInitialSpeed)) * waveHeight;
+    } else {
+        y = yOffset + sin(degrees(x * waveSpeed)) * waveHeight;
+    }
 }
 
 //check for overlaps
@@ -2152,6 +2170,10 @@ function keyPressed() {
                 }
             }
         }
+    }
+    if (showGrid && key === "1") {
+        slowDown = true;
+        slowWaveTimer = millis();
     }
     pop();
 }
